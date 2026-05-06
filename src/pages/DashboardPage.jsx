@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DEALS, TASKS, ACTIVITIES } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
+import { Card, Statistic, Checkbox, Tag, Avatar, Button } from 'antd'
+import { MailOutlined, PhoneOutlined } from '@ant-design/icons'
 
 const activityTypeIcon = (type) => {
   if (type === 'email') return (
@@ -30,44 +32,6 @@ const activityTypeIcon = (type) => {
       <path d="M12 20h9" />
       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
     </svg>
-  )
-}
-
-function KpiCard({ label, value, sub, accent, className }) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <div
-      className={className}
-      style={{
-        background: hovered ? 'var(--bg-card-hover)' : 'var(--bg-card)',
-        boxShadow: 'var(--shadow-card)',
-        borderRadius: 'var(--radius)',
-        padding: '20px',
-        transition: 'background 0.15s ease',
-        cursor: 'default',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div style={{
-        fontSize: '11px',
-        fontWeight: '500',
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        color: 'var(--text-muted)',
-        marginBottom: '10px',
-      }}>{label}</div>
-      <div style={{
-        fontFamily: "'Lexend', sans-serif",
-        fontSize: '36px',
-        fontWeight: '700',
-        color: accent || 'var(--text-primary)',
-        lineHeight: 1,
-        letterSpacing: '-1px',
-        marginBottom: '8px',
-      }}>{value}</div>
-      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{sub}</div>
-    </div>
   )
 }
 
@@ -100,65 +64,36 @@ export default function DashboardPage() {
     <div style={{ maxWidth: '100%' }}>
       {/* KPI Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-        <KpiCard
-          className="anim-fade-up anim-1"
-          label="Pipeline Value"
-          value={formatCurrency(pipelineValue)}
-          sub="↑ Active pipeline"
-          accent="var(--brand)"
-        />
-        <KpiCard
-          className="anim-fade-up anim-2"
-          label="Won This Month"
-          value={formatCurrency(wonValue)}
-          sub="↑ Closed won"
-          accent="var(--success)"
-        />
-        <KpiCard
-          className="anim-fade-up anim-3"
-          label="Win Rate"
-          value={winRate + '%'}
-          sub="→ All closed deals"
-          accent="#06B6D4"
-        />
-        <KpiCard
-          className="anim-fade-up anim-4"
-          label="Open Deals"
-          value={String(activeDeals.length)}
-          sub="→ Across all stages"
-          accent="var(--brand)"
-        />
+        {[
+          { className: 'anim-fade-up anim-1', label: 'Pipeline Value', value: formatCurrency(pipelineValue), sub: '↑ Active pipeline', accent: '#FF7A59' },
+          { className: 'anim-fade-up anim-2', label: 'Won This Month', value: formatCurrency(wonValue), sub: '↑ Closed won', accent: '#00BDA5' },
+          { className: 'anim-fade-up anim-3', label: 'Win Rate', value: winRate + '%', sub: '→ All closed deals', accent: '#06B6D4' },
+          { className: 'anim-fade-up anim-4', label: 'Open Deals', value: String(activeDeals.length), sub: '→ Across all stages', accent: '#FF7A59' },
+        ].map(kpi => (
+          <Card key={kpi.label} className={kpi.className} styles={{ body: { padding: '20px' } }}>
+            <Statistic
+              title={<span style={{ fontSize: '11px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>{kpi.label}</span>}
+              value={kpi.value}
+              valueStyle={{ color: kpi.accent, fontSize: '36px', fontWeight: '700', letterSpacing: '-1px', lineHeight: 1 }}
+              formatter={v => v}
+            />
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>{kpi.sub}</div>
+          </Card>
+        ))}
       </div>
 
       {/* Row 2 */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
         {/* Closing Soon */}
-        <div style={{
-          background: 'var(--bg-card)',
-          boxShadow: 'var(--shadow-card)',
-          borderRadius: 'var(--radius)',
-          overflow: 'hidden',
-        }}>
+        <Card styles={{ body: { padding: 0 } }}>
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '16px 20px', borderBottom: '1px solid var(--border)',
           }}>
             <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Closing Soon</span>
-            <button
-              style={{
-                fontSize: '12px',
-                color: 'var(--brand)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-              }}
-              onClick={() => navigate('/pipeline')}
-            >
+            <Button type="link" size="small" onClick={() => navigate('/pipeline')} style={{ padding: 0, fontSize: '12px' }}>
               View all →
-            </button>
+            </Button>
           </div>
           <div>
             {closingSoon.map((deal, i) => {
@@ -169,172 +104,106 @@ export default function DashboardPage() {
                   key={deal.id}
                   onClick={() => navigate(`/deals/${deal.id}`)}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '12px 20px',
+                    display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px',
                     borderBottom: i < closingSoon.length - 1 ? '1px solid var(--border)' : 'none',
                     background: isHov ? 'var(--bg-card-hover)' : 'transparent',
-                    cursor: 'pointer',
-                    transition: 'background 0.12s ease',
+                    cursor: 'pointer', transition: 'background 0.12s ease',
                   }}
                   onMouseEnter={() => setHoveredDeal(deal.id)}
                   onMouseLeave={() => setHoveredDeal(null)}
                 >
-                  {/* Company avatar */}
-                  <div style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '8px',
-                    background: 'var(--brand-dim)',
-                    border: '1px solid var(--brand-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    color: 'var(--brand)',
-                  }}>
+                  <Avatar
+                    size={32}
+                    shape="square"
+                    style={{
+                      background: 'rgba(255,122,89,0.1)',
+                      border: '1px solid rgba(255,122,89,0.25)',
+                      color: '#FF7A59',
+                      fontSize: '11px',
+                      fontWeight: '600',
+                      borderRadius: '8px',
+                      flexShrink: 0,
+                    }}
+                  >
                     {deal.company.slice(0, 2).toUpperCase()}
-                  </div>
+                  </Avatar>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {deal.name}
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{deal.company}</div>
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: 'var(--brand)', flexShrink: 0 }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#FF7A59', flexShrink: 0 }}>
                     {formatCurrency(deal.value)}
                   </div>
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, width: '60px', textAlign: 'right' }}>
                     {deal.closeDate.slice(5)}
                   </div>
-                  <div style={{
-                    padding: '2px 8px',
-                    borderRadius: '99px',
-                    fontSize: '11px',
-                    fontWeight: '500',
-                    color: meta.color,
-                    background: meta.bg,
-                    border: `1px solid ${meta.border}`,
-                    flexShrink: 0,
-                  }}>
+                  <Tag style={{ color: meta.color, background: meta.bg, borderColor: meta.border, fontWeight: 500, flexShrink: 0 }}>
                     {meta.label}
-                  </div>
+                  </Tag>
                 </div>
               )
             })}
           </div>
-        </div>
+        </Card>
 
         {/* Tasks */}
-        <div style={{
-          background: 'var(--bg-card)',
-          boxShadow: 'var(--shadow-card)',
-          borderRadius: 'var(--radius)',
-          overflow: 'hidden',
-        }}>
+        <Card styles={{ body: { padding: 0 } }}>
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '16px 20px', borderBottom: '1px solid var(--border)',
           }}>
             <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Tasks</span>
-            <span style={{
-              fontSize: '11px',
-              padding: '2px 7px',
-              borderRadius: '99px',
-              background: 'var(--brand-dim)',
-              color: 'var(--brand)',
-              border: '1px solid var(--brand-border)',
-            }}>
+            <Tag style={{ color: '#FF7A59', background: 'rgba(255,122,89,0.08)', borderColor: 'rgba(255,122,89,0.25)', fontSize: '11px' }}>
               {tasks.filter(t => !t.done).length} open
-            </span>
+            </Tag>
           </div>
           <div style={{ padding: '8px 0' }}>
             {tasks.map((task, i) => {
-              const dueColor = task.due === 'Today' ? 'var(--danger)' : task.due === 'Tomorrow' ? 'var(--warning)' : 'var(--text-muted)'
-              const dueBg = task.due === 'Today' ? 'var(--danger-dim)' : task.due === 'Tomorrow' ? 'var(--warning-dim)' : 'rgba(255,255,255,0.04)'
-              const priorityColor = task.priority === 'high' ? 'var(--danger)' : task.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)'
+              const dueColor = task.due === 'Today' ? '#F2545B' : task.due === 'Tomorrow' ? '#F5C26B' : 'var(--text-muted)'
+              const dueBg = task.due === 'Today' ? 'rgba(242,84,91,0.08)' : task.due === 'Tomorrow' ? 'rgba(245,194,107,0.08)' : 'rgba(255,255,255,0.04)'
+              const dueBorder = task.due === 'Today' ? 'rgba(239,68,68,0.2)' : task.due === 'Tomorrow' ? 'rgba(245,158,11,0.2)' : 'var(--border)'
+              const priorityColor = task.priority === 'high' ? '#F2545B' : task.priority === 'medium' ? '#F5C26B' : 'var(--text-muted)'
               return (
                 <div
                   key={task.id}
                   style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    padding: '10px 16px',
+                    display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 16px',
                     borderBottom: i < tasks.length - 1 ? '1px solid var(--border)' : 'none',
                     opacity: task.done ? 0.5 : 1,
                   }}
                 >
-                  <button
-                    onClick={() => toggleTask(task.id)}
-                    style={{
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '4px',
-                      border: `1.5px solid ${task.done ? 'var(--success)' : 'var(--border-strong)'}`,
-                      background: task.done ? 'var(--success-dim)' : 'transparent',
-                      flexShrink: 0,
-                      marginTop: '1px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {task.done && (
-                      <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="2,6 5,9 10,3" />
-                      </svg>
-                    )}
-                  </button>
+                  <Checkbox
+                    checked={task.done}
+                    onChange={() => toggleTask(task.id)}
+                    style={{ marginTop: '2px', flexShrink: 0 }}
+                  />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: '12.5px',
-                      fontWeight: '500',
-                      color: 'var(--text-primary)',
-                      textDecoration: task.done ? 'line-through' : 'none',
-                      marginBottom: '2px',
+                      fontSize: '12.5px', fontWeight: '500', color: 'var(--text-primary)',
+                      textDecoration: task.done ? 'line-through' : 'none', marginBottom: '2px',
                     }}>
                       {task.title}
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{task.person}</div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
-                    <span style={{
-                      fontSize: '10px',
-                      padding: '1px 6px',
-                      borderRadius: '99px',
-                      background: dueBg,
-                      color: dueColor,
-                      border: `1px solid ${task.due === 'Today' ? 'rgba(239,68,68,0.2)' : task.due === 'Tomorrow' ? 'rgba(245,158,11,0.2)' : 'var(--border)'}`,
-                    }}>
+                    <Tag style={{ color: dueColor, background: dueBg, borderColor: dueBorder, fontSize: '10px', margin: 0 }}>
                       {task.due}
-                    </span>
+                    </Tag>
                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: priorityColor, display: 'block' }} />
                   </div>
                 </div>
               )
             })}
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Recent Activity */}
-      <div style={{
-        background: 'var(--bg-card)',
-        boxShadow: 'var(--shadow-card)',
-        borderRadius: 'var(--radius)',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          padding: '16px 20px',
-          borderBottom: '1px solid var(--border)',
-        }}>
+      <Card styles={{ body: { padding: 0 } }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
           <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Recent Activity</span>
         </div>
         <div style={{ padding: '8px 0' }}>
@@ -342,28 +211,21 @@ export default function DashboardPage() {
             <div
               key={act.id}
               style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '14px',
-                padding: '12px 20px',
+                display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '12px 20px',
                 borderBottom: i < ACTIVITIES.length - 1 ? '1px solid var(--border)' : 'none',
               }}
             >
-              {/* Icon circle */}
-              <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                background: act.color + '1A',
-                border: `1px solid ${act.color}33`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                color: act.color,
-              }}>
+              <Avatar
+                size={32}
+                style={{
+                  background: act.color + '1A',
+                  border: `1px solid ${act.color}33`,
+                  color: act.color,
+                  flexShrink: 0,
+                }}
+              >
                 {activityTypeIcon(act.type)}
-              </div>
+              </Avatar>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: '13px', marginBottom: '1px' }}>
                   <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{act.person}</span>
@@ -377,7 +239,7 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

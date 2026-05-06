@@ -2,15 +2,21 @@ import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { DEALS, PEOPLE } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
+import { Card, Tag, Avatar, Button, Progress, Breadcrumb, Descriptions, Divider, Input } from 'antd'
+import { CheckOutlined } from '@ant-design/icons'
+
+const { TextArea } = Input
 
 const DEAL_ACTIVITIES = [
-  { id: 1, type: 'call', icon: '📞', title: 'Discovery call completed', desc: 'Discussed pain points and technical requirements. Strong fit for enterprise tier.', time: '2 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 2, type: 'email', icon: '✉️', title: 'Proposal sent', desc: 'Sent full proposal document with pricing breakdown and implementation timeline.', time: '5 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 3, type: 'meeting', icon: '📅', title: 'Meeting scheduled', desc: 'Technical evaluation call booked with engineering team. 60 min slot confirmed.', time: '8 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 4, type: 'note', icon: '📝', title: 'Deal created', desc: 'Initial qualification complete. Budget confirmed, timeline Q2.', time: '14 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
+  { id: 1, type: 'call', title: 'Discovery call completed', desc: 'Discussed pain points and technical requirements. Strong fit for enterprise tier.', time: '2 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
+  { id: 2, type: 'email', title: 'Proposal sent', desc: 'Sent full proposal document with pricing breakdown and implementation timeline.', time: '5 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
+  { id: 3, type: 'meeting', title: 'Meeting scheduled', desc: 'Technical evaluation call booked with engineering team. 60 min slot confirmed.', time: '8 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
+  { id: 4, type: 'note', title: 'Deal created', desc: 'Initial qualification complete. Budget confirmed, timeline Q2.', time: '14 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
 ]
 
-const typeIcon = (type) => {
+const typeColor = { call: '#00BDA5', email: '#0091AE', meeting: '#7A5AF8', note: '#F5C26B' }
+
+const typeIconSvg = (type) => {
   if (type === 'call') return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.39 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -38,24 +44,17 @@ const typeIcon = (type) => {
   )
 }
 
-const typeColor = { call: '#00BDA5', email: '#0091AE', meeting: '#7A5AF8', note: '#F5C26B' }
-
 export default function DealPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [note, setNote] = useState('')
-  const [noteFocused, setNoteFocused] = useState(false)
-  const [wonHov, setWonHov] = useState(false)
-  const [editHov, setEditHov] = useState(false)
 
   const deal = DEALS.find(d => d.id === id)
   if (!deal) {
     return (
       <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
         Deal not found.{' '}
-        <button onClick={() => navigate('/pipeline')} style={{ color: 'var(--brand)', background: 'none', border: 'none', cursor: 'pointer' }}>
-          Back to Pipeline
-        </button>
+        <Button type="link" onClick={() => navigate('/pipeline')}>Back to Pipeline</Button>
       </div>
     )
   }
@@ -67,89 +66,57 @@ export default function DealPage() {
   const [, cm, cd] = deal.closeDate.split('-')
   const closeFmt = months[parseInt(cm)] + ' ' + parseInt(cd) + ', 2025'
 
+
   return (
     <div style={{ maxWidth: '100%' }}>
       {/* Breadcrumb */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '20px', fontSize: '12px', color: 'var(--text-muted)' }}>
-        <button
-          onClick={() => navigate('/pipeline')}
-          style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '12px', padding: 0 }}
-          onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
-          onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-        >
-          Pipeline
-        </button>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-        <span style={{ color: 'var(--text-secondary)' }}>{deal.company}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-        <span style={{ color: 'var(--text-primary)' }}>{deal.name}</span>
-      </div>
+      <Breadcrumb
+        style={{ marginBottom: '20px' }}
+        items={[
+          { title: <span style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={() => navigate('/pipeline')}>Pipeline</span> },
+          { title: deal.company },
+          { title: deal.name },
+        ]}
+      />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '20px', alignItems: 'start' }}>
         {/* Main column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Header card */}
-          <div style={{
-            background: 'var(--bg-card)',
-            boxShadow: 'var(--shadow-card)',
-            borderRadius: 'var(--radius)',
-            padding: '24px',
-          }}>
+          <Card>
             <div style={{
-              fontFamily: "'Lexend', sans-serif",
-              fontSize: '24px',
-              fontWeight: '700',
-              color: 'var(--text-primary)',
-              letterSpacing: '-0.5px',
-              marginBottom: '14px',
-              lineHeight: 1.2,
+              fontFamily: "'Lexend', sans-serif", fontSize: '24px', fontWeight: '700',
+              color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '14px', lineHeight: 1.2,
             }}>
               {deal.name}
             </div>
 
             {/* Company + contact */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <div style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '6px',
-                background: 'var(--brand-dim)',
-                border: '1px solid var(--brand-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '10px',
-                fontWeight: '700',
-                color: 'var(--brand)',
-              }}>
+              <Avatar
+                size={28}
+                shape="square"
+                style={{
+                  background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)',
+                  color: '#FF7A59', fontSize: '10px', fontWeight: '700', borderRadius: '6px',
+                }}
+              >
                 {deal.company.slice(0, 2).toUpperCase()}
-              </div>
+              </Avatar>
               <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{deal.company}</span>
               <span style={{ color: 'var(--text-muted)' }}>·</span>
               {contact && (
                 <>
-                  <div style={{
-                    width: '22px',
-                    height: '22px',
-                    borderRadius: '50%',
-                    background: contact.color + '22',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '8px',
-                    fontWeight: '600',
-                    color: contact.color,
-                  }}>
+                  <Avatar
+                    size={22}
+                    style={{ background: contact.color + '22', color: contact.color, fontSize: '8px', fontWeight: '600' }}
+                  >
                     {contact.avatar}
-                  </div>
+                  </Avatar>
                   <Link
                     to={`/people/${contact.id}`}
                     style={{ fontSize: '13px', color: 'var(--text-secondary)', textDecoration: 'none' }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
+                    onMouseEnter={e => e.currentTarget.style.color = '#FF7A59'}
                     onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
                   >
                     {contact.name}
@@ -160,102 +127,48 @@ export default function DealPage() {
 
             {/* Badges */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                padding: '4px 12px',
-                borderRadius: '99px',
-                fontSize: '12px',
-                fontWeight: '500',
-                color: meta.color,
-                background: meta.bg,
-                border: `1px solid ${meta.border}`,
-              }}>
+              <Tag style={{ color: meta.color, background: meta.bg, borderColor: meta.border, fontWeight: 500, borderRadius: '99px', padding: '4px 12px' }}>
                 {meta.label}
-              </span>
-              <span style={{
-                padding: '4px 12px',
-                borderRadius: '99px',
-                fontSize: '12px',
-                fontWeight: '500',
-                color: 'var(--text-secondary)',
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border)',
-                fontFamily: "'JetBrains Mono', monospace",
-              }}>
+              </Tag>
+              <Tag style={{ borderRadius: '99px', padding: '4px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: '12px' }}>
                 {deal.probability}% probability
-              </span>
-              <span style={{
-                padding: '4px 12px',
-                borderRadius: '99px',
-                fontSize: '12px',
-                color: 'var(--text-muted)',
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border)',
-              }}>
+              </Tag>
+              <Tag style={{ borderRadius: '99px', padding: '4px 12px' }}>
                 {deal.activity}
-              </span>
+              </Tag>
             </div>
-          </div>
+          </Card>
 
           {/* Activity timeline */}
-          <div style={{
-            background: 'var(--bg-card)',
-            boxShadow: 'var(--shadow-card)',
-            borderRadius: 'var(--radius)',
-            overflow: 'hidden',
-          }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
-              <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Activity</span>
-            </div>
-            <div style={{ padding: '8px 0' }}>
+          <Card title={<span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Activity</span>}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               {DEAL_ACTIVITIES.map((act, i) => {
-                const color = typeColor[act.type] || '#7C66FF'
+                const color = typeColor[act.type] || '#7A5AF8'
+                const isLast = i === DEAL_ACTIVITIES.length - 1
                 return (
-                  <div
-                    key={act.id}
-                    style={{
-                      display: 'flex',
-                      gap: '14px',
-                      padding: '14px 20px',
-                      borderBottom: i < DEAL_ACTIVITIES.length - 1 ? '1px solid var(--border)' : 'none',
-                    }}
-                  >
-                    {/* Icon */}
-                    <div style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '50%',
-                      background: color + '1A',
-                      border: `1px solid ${color}33`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      color: color,
-                      marginTop: '1px',
-                    }}>
-                      {typeIcon(act.type)}
+                  <div key={act.id} style={{ display: 'flex', gap: '14px' }}>
+                    {/* Icon + line */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                      <div style={{
+                        width: '32px', height: '32px', borderRadius: '50%',
+                        background: color + '1A', border: `1.5px solid ${color}33`,
+                        color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                      }}>
+                        {typeIconSvg(act.type)}
+                      </div>
+                      {!isLast && <div style={{ width: '1px', flexGrow: 1, background: 'var(--border)', margin: '4px 0' }} />}
                     </div>
-                    <div style={{ flex: 1 }}>
+                    {/* Content */}
+                    <div style={{ paddingBottom: isLast ? 0 : '20px', flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
                         <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>{act.title}</span>
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-muted)' }}>{act.time}</span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, marginLeft: '12px' }}>{act.time}</span>
                       </div>
-                      <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{act.desc}</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
-                        <div style={{
-                          width: '16px',
-                          height: '16px',
-                          borderRadius: '50%',
-                          background: 'var(--brand-dim)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '7px',
-                          fontWeight: '700',
-                          color: 'var(--brand)',
-                        }}>
+                      <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 6px 0' }}>{act.desc}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Avatar size={16} style={{ background: 'rgba(255,122,89,0.1)', color: '#FF7A59', fontSize: '7px', fontWeight: '700' }}>
                           {act.person.split(' ').map(w => w[0]).join('')}
-                        </div>
+                        </Avatar>
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{act.person}</span>
                       </div>
                     </div>
@@ -263,213 +176,107 @@ export default function DealPage() {
                 )
               })}
             </div>
-          </div>
+          </Card>
 
           {/* Notes */}
-          <div style={{
-            background: 'var(--bg-card)',
-            boxShadow: 'var(--shadow-card)',
-            borderRadius: 'var(--radius)',
-            padding: '20px',
-          }}>
+          <Card>
             <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px' }}>Notes</div>
-            <textarea
+            <TextArea
               value={note}
               onChange={e => setNote(e.target.value)}
-              onFocus={() => setNoteFocused(true)}
-              onBlur={() => setNoteFocused(false)}
               placeholder="Add a note about this deal..."
               rows={4}
-              style={{
-                width: '100%',
-                background: 'var(--bg-input)',
-                border: `1px solid ${noteFocused ? 'var(--border-focus)' : 'var(--border-strong)'}`,
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-primary)',
-                fontSize: '13px',
-                padding: '10px 12px',
-                outline: 'none',
-                resize: 'vertical',
-                lineHeight: '1.6',
-                boxShadow: noteFocused ? '0 0 0 2px var(--brand-dim)' : 'none',
-                transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
-              }}
+              style={{ resize: 'vertical' }}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <button style={{
-                padding: '7px 14px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--brand)',
-                border: 'none',
-                color: '#fff',
-                fontSize: '12.5px',
-                fontWeight: '500',
-                cursor: 'pointer',
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--brand-hover)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'var(--brand)'}
-              >
-                Save note
-              </button>
+              <Button type="primary" size="small">Save note</Button>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Sidebar */}
-        <div style={{
-          background: 'var(--bg-card)',
-          boxShadow: 'var(--shadow-card)',
-          borderRadius: 'var(--radius)',
-          padding: '20px',
-          position: 'sticky',
-          top: '80px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-        }}>
+        <Card style={{ position: 'sticky', top: '80px' }}>
           {/* Value */}
-          <div>
+          <div style={{ marginBottom: '16px' }}>
             <div style={{ fontSize: '11px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '6px' }}>
               Deal Value
             </div>
             <div style={{
-              fontFamily: "'Lexend', sans-serif",
-              fontSize: '28px',
-              fontWeight: '700',
-              color: 'var(--brand)',
-              letterSpacing: '-1px',
+              fontFamily: "'Lexend', sans-serif", fontSize: '28px', fontWeight: '700',
+              color: '#FF7A59', letterSpacing: '-1px',
             }}>
               {formatCurrency(deal.value)}
             </div>
           </div>
 
-          <div style={{ height: '1px', background: 'var(--border)' }} />
+          <Divider style={{ margin: '0 0 16px 0' }} />
 
           {/* Details */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <DetailRow label="Close Date" value={closeFmt} mono />
-            <DetailRow
-              label="Owner"
-              custom={
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                  <div style={{
-                    width: '20px', height: '20px', borderRadius: '50%',
-                    background: 'var(--brand-dim)', border: '1px solid var(--brand-border)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '8px', fontWeight: '700', color: 'var(--brand)',
-                  }}>{ownerInitials}</div>
-                  <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{deal.owner}</span>
-                </div>
-              }
-            />
-            <DetailRow
-              label="Company"
-              custom={
-                <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{deal.company}</span>
-              }
-            />
+          <Descriptions column={1} size="small" colon={false} style={{ marginBottom: '16px' }} styles={{ label: { color: 'var(--text-muted)', fontSize: '10.5px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', width: '90px' } }}>
+            <Descriptions.Item label="Close Date">
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: 'var(--text-secondary)' }}>{closeFmt}</span>
+            </Descriptions.Item>
+            <Descriptions.Item label="Owner">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                <Avatar
+                  size={20}
+                  style={{ background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)', color: '#FF7A59', fontSize: '8px', fontWeight: '700' }}
+                >
+                  {ownerInitials}
+                </Avatar>
+                <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{deal.owner}</span>
+              </div>
+            </Descriptions.Item>
+            <Descriptions.Item label="Company">
+              <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{deal.company}</span>
+            </Descriptions.Item>
             {contact && (
-              <DetailRow
-                label="Contact"
-                custom={
-                  <Link
-                    to={`/people/${contact.id}`}
-                    style={{ fontSize: '12.5px', color: 'var(--text-secondary)', textDecoration: 'none' }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
-                  >
-                    {contact.name}
-                  </Link>
-                }
-              />
+              <Descriptions.Item label="Contact">
+                <Link
+                  to={`/people/${contact.id}`}
+                  style={{ fontSize: '12.5px', color: 'var(--text-secondary)', textDecoration: 'none' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#FF7A59'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+                >
+                  {contact.name}
+                </Link>
+              </Descriptions.Item>
             )}
-          </div>
+          </Descriptions>
 
           {/* Probability */}
-          <div>
+          <div style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
               <span style={{ fontSize: '11px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>Probability</span>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: meta.color }}>{deal.probability}%</span>
             </div>
-            <div style={{ height: '6px', background: 'var(--bg-elevated)', borderRadius: '3px', overflow: 'hidden' }}>
-              <div style={{
-                width: deal.probability + '%',
-                height: '100%',
-                background: meta.color,
-                borderRadius: '3px',
-              }} />
-            </div>
+            <Progress
+              percent={deal.probability}
+              showInfo={false}
+              strokeColor={meta.color}
+              size={['100%', 6]}
+              trailColor="var(--bg-elevated)"
+            />
           </div>
 
-          <div style={{ height: '1px', background: 'var(--border)' }} />
+          <Divider style={{ margin: '0 0 16px 0' }} />
 
           {/* Actions */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <button
+            <Button
+              block
+              icon={<CheckOutlined />}
               style={{
-                width: '100%',
-                padding: '9px',
-                borderRadius: 'var(--radius-sm)',
-                background: wonHov ? 'rgba(34,197,94,0.2)' : 'var(--success-dim)',
-                border: '1px solid rgba(34,197,94,0.3)',
-                color: 'var(--success)',
-                fontSize: '13px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'background 0.15s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '7px',
+                background: 'rgba(0,189,165,0.1)', borderColor: 'rgba(0,189,165,0.3)',
+                color: '#00BDA5', fontWeight: '500',
               }}
-              onMouseEnter={() => setWonHov(true)}
-              onMouseLeave={() => setWonHov(false)}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
               Mark as Won
-            </button>
-            <button
-              style={{
-                width: '100%',
-                padding: '9px',
-                borderRadius: 'var(--radius-sm)',
-                background: editHov ? 'rgba(0,0,0,0.04)' : 'transparent',
-                border: '1px solid var(--border-strong)',
-                color: 'var(--text-secondary)',
-                fontSize: '13px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'background 0.15s ease',
-              }}
-              onMouseEnter={() => setEditHov(true)}
-              onMouseLeave={() => setEditHov(false)}
-            >
-              Edit Deal
-            </button>
+            </Button>
+            <Button block>Edit Deal</Button>
           </div>
-        </div>
+        </Card>
       </div>
-    </div>
-  )
-}
-
-function DetailRow({ label, value, custom, mono }) {
-  return (
-    <div>
-      <div style={{ fontSize: '10.5px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: '3px' }}>
-        {label}
-      </div>
-      {custom || (
-        <span style={{
-          fontSize: '12.5px',
-          color: 'var(--text-secondary)',
-          fontFamily: mono ? "'JetBrains Mono', monospace" : 'inherit',
-        }}>
-          {value}
-        </span>
-      )}
     </div>
   )
 }
