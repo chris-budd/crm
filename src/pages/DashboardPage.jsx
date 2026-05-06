@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { DEALS, TASKS, ACTIVITIES } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { Card, Statistic, Checkbox, Tag, Avatar, Button } from 'antd'
+import { CardHeader } from '../components/CardHeader/CardHeader'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { MailOutlined, PhoneOutlined } from '@ant-design/icons'
 
 const activityTypeIcon = (type) => {
@@ -40,7 +42,7 @@ export default function DashboardPage() {
   const [hoveredDeal, setHoveredDeal] = useState(null)
   const [tasks, setTasks] = useState(TASKS)
 
-  const now = new Date('2025-05-05')
+  const now = new Date('2026-05-06')
   const in30 = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
 
   const activeDeals = DEALS.filter(d => d.stage !== 'closed_won' && d.stage !== 'closed_lost')
@@ -65,10 +67,10 @@ export default function DashboardPage() {
       {/* KPI Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
         {[
-          { className: 'anim-fade-up anim-1', label: 'Pipeline Value', value: formatCurrency(pipelineValue), sub: '↑ Active pipeline', accent: '#FF7A59' },
-          { className: 'anim-fade-up anim-2', label: 'Won This Month', value: formatCurrency(wonValue), sub: '↑ Closed won', accent: '#00BDA5' },
+          { className: 'anim-fade-up anim-1', label: 'Pipeline Value', value: formatCurrency(pipelineValue), sub: '↑ Active pipeline', accent: 'var(--brand)' },
+          { className: 'anim-fade-up anim-2', label: 'Won This Month', value: formatCurrency(wonValue), sub: '↑ Closed won', accent: 'var(--success)' },
           { className: 'anim-fade-up anim-3', label: 'Win Rate', value: winRate + '%', sub: '→ All closed deals', accent: '#06B6D4' },
-          { className: 'anim-fade-up anim-4', label: 'Open Deals', value: String(activeDeals.length), sub: '→ Across all stages', accent: '#FF7A59' },
+          { className: 'anim-fade-up anim-4', label: 'Open Deals', value: String(activeDeals.length), sub: '→ Across all stages', accent: 'var(--brand)' },
         ].map(kpi => (
           <Card key={kpi.label} className={kpi.className} styles={{ body: { padding: '20px' } }}>
             <Statistic
@@ -86,15 +88,10 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
         {/* Closing Soon */}
         <Card styles={{ body: { padding: 0 } }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '16px 20px', borderBottom: '1px solid var(--border)',
-          }}>
-            <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Closing Soon</span>
-            <Button type="link" size="small" onClick={() => navigate('/pipeline')} style={{ padding: 0, fontSize: '12px' }}>
-              View all →
-            </Button>
-          </div>
+          <CardHeader
+            title="Closing Soon"
+            right={<Button type="link" size="small" onClick={() => navigate('/pipeline')} style={{ padding: 0, fontSize: '12px' }}>View all →</Button>}
+          />
           <div>
             {closingSoon.map((deal, i) => {
               const meta = stageMeta(deal.stage)
@@ -118,7 +115,7 @@ export default function DashboardPage() {
                     style={{
                       background: 'rgba(255,122,89,0.1)',
                       border: '1px solid rgba(255,122,89,0.25)',
-                      color: '#FF7A59',
+                      color: 'var(--brand)',
                       fontSize: '11px',
                       fontWeight: '600',
                       borderRadius: '8px',
@@ -133,12 +130,8 @@ export default function DashboardPage() {
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{deal.company}</div>
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#FF7A59', flexShrink: 0 }}>
-                    {formatCurrency(deal.value)}
-                  </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, width: '60px', textAlign: 'right' }}>
-                    {deal.closeDate.slice(5)}
-                  </div>
+                  <MonoValue size="13px" color="var(--brand)" style={{ flexShrink: 0 }}>{formatCurrency(deal.value)}</MonoValue>
+                  <MonoValue size="11px" color="var(--text-muted)" style={{ flexShrink: 0, width: '60px', textAlign: 'right' }}>{deal.closeDate.slice(5)}</MonoValue>
                   <Tag style={{ color: meta.color, background: meta.bg, borderColor: meta.border, fontWeight: 500, flexShrink: 0 }}>
                     {meta.label}
                   </Tag>
@@ -150,26 +143,21 @@ export default function DashboardPage() {
 
         {/* Tasks */}
         <Card styles={{ body: { padding: 0 } }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '16px 20px', borderBottom: '1px solid var(--border)',
-          }}>
-            <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Tasks</span>
-            <Tag style={{ color: '#FF7A59', background: 'rgba(255,122,89,0.08)', borderColor: 'rgba(255,122,89,0.25)', fontSize: '11px' }}>
-              {tasks.filter(t => !t.done).length} open
-            </Tag>
-          </div>
-          <div style={{ padding: '8px 0' }}>
+          <CardHeader
+            title="Tasks"
+            right={<Tag style={{ color: 'var(--brand)', background: 'var(--brand-subtle)', borderColor: 'var(--brand-border)', fontSize: '11px' }}>{tasks.filter(t => !t.done).length} open</Tag>}
+          />
+          <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
             {tasks.map((task, i) => {
-              const dueColor = task.due === 'Today' ? '#F2545B' : task.due === 'Tomorrow' ? '#F5C26B' : 'var(--text-muted)'
-              const dueBg = task.due === 'Today' ? 'rgba(242,84,91,0.08)' : task.due === 'Tomorrow' ? 'rgba(245,194,107,0.08)' : 'rgba(255,255,255,0.04)'
+              const dueColor = task.due === 'Today' ? 'var(--danger)' : task.due === 'Tomorrow' ? 'var(--warning)' : 'var(--text-muted)'
+              const dueBg = task.due === 'Today' ? 'rgba(242,84,91,0.08)' : task.due === 'Tomorrow' ? 'rgba(245,194,107,0.08)' : 'transparent'
               const dueBorder = task.due === 'Today' ? 'rgba(239,68,68,0.2)' : task.due === 'Tomorrow' ? 'rgba(245,158,11,0.2)' : 'var(--border)'
-              const priorityColor = task.priority === 'high' ? '#F2545B' : task.priority === 'medium' ? '#F5C26B' : 'var(--text-muted)'
+              const priorityColor = task.priority === 'high' ? 'var(--danger)' : task.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)'
               return (
                 <div
                   key={task.id}
                   style={{
-                    display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 16px',
+                    display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px',
                     borderBottom: i < tasks.length - 1 ? '1px solid var(--border)' : 'none',
                     opacity: task.done ? 0.5 : 1,
                   }}
@@ -177,7 +165,7 @@ export default function DashboardPage() {
                   <Checkbox
                     checked={task.done}
                     onChange={() => toggleTask(task.id)}
-                    style={{ marginTop: '2px', flexShrink: 0 }}
+                    style={{ flexShrink: 0 }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
@@ -186,14 +174,14 @@ export default function DashboardPage() {
                     }}>
                       {task.title}
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{task.person}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: priorityColor, flexShrink: 0 }} />
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{task.person}</span>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 }}>
-                    <Tag style={{ color: dueColor, background: dueBg, borderColor: dueBorder, fontSize: '10px', margin: 0 }}>
-                      {task.due}
-                    </Tag>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: priorityColor, display: 'block' }} />
-                  </div>
+                  <Tag style={{ color: dueColor, background: dueBg, borderColor: dueBorder, fontSize: '10px', margin: 0, flexShrink: 0 }}>
+                    {task.due}
+                  </Tag>
                 </div>
               )
             })}
@@ -203,9 +191,7 @@ export default function DashboardPage() {
 
       {/* Recent Activity */}
       <Card styles={{ body: { padding: 0 } }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
-          <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Recent Activity</span>
-        </div>
+        <CardHeader title="Recent Activity" />
         <div style={{ padding: '8px 0' }}>
           {ACTIVITIES.map((act, i) => (
             <div
@@ -233,9 +219,7 @@ export default function DashboardPage() {
                 </div>
                 <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{act.text}</div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, marginTop: '2px' }}>
-                {act.time}
-              </div>
+              <MonoValue size="11px" color="var(--text-muted)" style={{ flexShrink: 0, marginTop: '2px' }}>{act.time}</MonoValue>
             </div>
           ))}
         </div>

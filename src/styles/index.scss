@@ -1,0 +1,69 @@
+@use './tokens' as *;
+
+// ─── Google Fonts ─────────────────────────────────────────────────────────────
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+// ─── Tailwind layers ──────────────────────────────────────────────────────────
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ─── Global reset ─────────────────────────────────────────────────────────────
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: $font-sans;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: $line-height-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--brand-dim);
+  color: var(--text-primary);
+}
+
+// ─── Scrollbar ────────────────────────────────────────────────────────────────
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #{$navy-300}; border-radius: $radius-xs; }
+::-webkit-scrollbar-thumb:hover { background: #{$navy-400}; }
+
+// ─── Base element defaults ────────────────────────────────────────────────────
+a       { color: inherit; text-decoration: none; }
+button  { cursor: pointer; font-family: $font-sans; }
+input, textarea, select { font-family: $font-sans; }
+
+// ─── Animation keyframes ──────────────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// ─── Animation utility classes ────────────────────────────────────────────────
+.anim-fade-up  { animation: fadeUp $duration-moderate $ease-standard both; }
+.anim-1        { animation-delay: 0ms; }
+.anim-2        { animation-delay: 50ms; }
+.anim-3        { animation-delay: 100ms; }
+.anim-4        { animation-delay: 150ms; }
+.anim-scale-in { animation: scaleIn $duration-slow $ease-spring both; }

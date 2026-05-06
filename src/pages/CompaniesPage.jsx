@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { COMPANIES } from '../data/crm'
 import { formatARR } from '../utils/crm'
 import { Button, Input, Table, Avatar } from 'antd'
+import { PageHeader } from '../components/PageHeader/PageHeader'
+import { OwnerAvatar } from '../components/OwnerAvatar/OwnerAvatar'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons'
 
 function companyColor(name) {
@@ -68,9 +71,7 @@ export default function CompaniesPage() {
       key: 'employees',
       width: 100,
       render: v => (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: 'var(--text-secondary)' }}>
-          {v.toLocaleString()}
-        </span>
+        <MonoValue color="var(--text-secondary)">{v.toLocaleString()}</MonoValue>
       ),
     },
     {
@@ -79,12 +80,7 @@ export default function CompaniesPage() {
       key: 'arr',
       width: 120,
       render: (v) => (
-        <span style={{
-          fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', fontWeight: '500',
-          color: v >= 5000000 ? '#00BDA5' : 'var(--text-secondary)',
-        }}>
-          {formatARR(v)}
-        </span>
+        <MonoValue weight="500" color={v >= 5000000 ? 'var(--success)' : 'var(--text-secondary)'}>{formatARR(v)}</MonoValue>
       ),
     },
     {
@@ -93,12 +89,7 @@ export default function CompaniesPage() {
       key: 'activeDeals',
       width: 110,
       render: v => (
-        <span style={{
-          fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '600',
-          color: v > 0 ? '#FF7A59' : 'var(--text-muted)',
-        }}>
-          {v}
-        </span>
+        <MonoValue size="13px" weight="600" color={v > 0 ? 'var(--brand)' : 'var(--text-muted)'}>{v}</MonoValue>
       ),
     },
     {
@@ -110,19 +101,7 @@ export default function CompaniesPage() {
         const ownerInitials = owner.split(' ').map(w => w[0]).join('')
         return (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Avatar
-              size={22}
-              style={{
-                background: 'rgba(255,122,89,0.1)',
-                border: '1px solid rgba(255,122,89,0.25)',
-                color: '#FF7A59',
-                fontSize: '9px',
-                fontWeight: '600',
-                flexShrink: 0,
-              }}
-            >
-              {ownerInitials}
-            </Avatar>
+            <OwnerAvatar name={owner} size={22} />
             <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{owner}</span>
           </div>
         )
@@ -143,16 +122,11 @@ export default function CompaniesPage() {
   return (
     <div style={{ maxWidth: '100%' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{
-            fontFamily: "'Lexend', sans-serif", fontSize: '26px', fontWeight: '700',
-            color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '4px',
-          }}>Companies</h1>
-          <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{COMPANIES.length} companies</div>
-        </div>
-        <Button type="primary" icon={<PlusOutlined />}>Add company</Button>
-      </div>
+      <PageHeader
+        title="Companies"
+        subtitle={`${COMPANIES.length} companies`}
+        action={<Button type="primary" icon={<PlusOutlined />}>Add company</Button>}
+      />
 
       {/* Search */}
       <Input

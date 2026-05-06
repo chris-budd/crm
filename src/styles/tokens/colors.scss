@@ -1,0 +1,70 @@
+// ─── Primitive palette ────────────────────────────────────────────────────────
+// HubSpot-inspired — single source of truth for every color value in the app.
+
+$coral-500:  #FF7A59;
+$coral-600:  #E8614A;
+$teal-500:   #00BDA5;
+$amber-400:  #F5C26B;
+$red-500:    #F2545B;
+$navy-900:   #2E3E50;
+$navy-800:   #33475B;
+$navy-600:   #516F90;
+$navy-400:   #99ACC2;
+$navy-300:   #C8D0DC;
+$blue-600:   #0091AE;
+$purple-600: #7A5AF8;
+$grey-50:    #F5F8FA;
+$grey-100:   #EAF0F6;
+$grey-200:   #DFE3EB;
+$white:      #FFFFFF;
+
+// ─── Semantic CSS custom properties ──────────────────────────────────────────
+// These are what components reference at runtime. SCSS variables above are the
+// compile-time source of truth; the two sets must always stay in sync.
+
+:root {
+  // Backgrounds
+  --bg:            #{$grey-50};
+  --bg-elevated:   #{$grey-100};
+  --bg-card:       #{$white};
+  --bg-card-hover: #{$grey-50};
+  --bg-input:      #{$white};
+
+  // Sidebar — always dark, not theme-switched
+  --sidebar-bg:    #{$navy-900};
+
+  // Text
+  --text-primary:   #{$navy-800};
+  --text-secondary: #{$navy-600};
+  --text-muted:     #{$navy-400};
+
+  // Borders
+  --border:        #{$grey-200};
+  --border-strong: #{$navy-400};
+  --border-focus:  rgba(255, 122, 89, 0.5);
+
+  // Brand (coral)
+  --brand:        #{$coral-500};
+  --brand-hover:  #{$coral-600};
+  --brand-dim:    rgba(255, 122, 89, 0.10);
+  --brand-border: rgba(255, 122, 89, 0.25);
+  --brand-subtle: rgba(255, 122, 89, 0.08);
+
+  // Semantic status
+  --success:        #{$teal-500};
+  --success-dim:    rgba(0, 189, 165, 0.10);
+  --success-subtle: rgba(0, 189, 165, 0.08);
+
+  --warning:     #{$amber-400};
+  --warning-dim: rgba(245, 194, 107, 0.12);
+
+  --danger:        #{$red-500};
+  --danger-dim:    rgba(242, 84, 91, 0.10);
+  --danger-subtle: rgba(242, 84, 91, 0.08);
+
+  // Extended palette (available as vars for one-off use in components)
+  --color-blue:   #{$blue-600};
+  --color-purple: #{$purple-600};
+  --color-teal:   #{$teal-500};
+  --color-amber:  #{$amber-400};
+}

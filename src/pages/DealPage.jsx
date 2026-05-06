@@ -3,15 +3,17 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { DEALS, PEOPLE } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { Card, Tag, Avatar, Button, Progress, Breadcrumb, Descriptions, Divider, Input } from 'antd'
+import { OwnerAvatar } from '../components/OwnerAvatar/OwnerAvatar'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { CheckOutlined } from '@ant-design/icons'
 
 const { TextArea } = Input
 
 const DEAL_ACTIVITIES = [
-  { id: 1, type: 'call', title: 'Discovery call completed', desc: 'Discussed pain points and technical requirements. Strong fit for enterprise tier.', time: '2 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 2, type: 'email', title: 'Proposal sent', desc: 'Sent full proposal document with pricing breakdown and implementation timeline.', time: '5 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 3, type: 'meeting', title: 'Meeting scheduled', desc: 'Technical evaluation call booked with engineering team. 60 min slot confirmed.', time: '8 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
-  { id: 4, type: 'note', title: 'Deal created', desc: 'Initial qualification complete. Budget confirmed, timeline Q2.', time: '14 days ago', person: 'Sam Pierce', personColor: '#FF7A59' },
+  { id: 1, type: 'call', title: 'Discovery call completed', desc: 'Discussed pain points and technical requirements. Strong fit for enterprise tier.', time: '2 days ago', person: 'Sam Pierce', personColor: 'var(--brand)' },
+  { id: 2, type: 'email', title: 'Proposal sent', desc: 'Sent full proposal document with pricing breakdown and implementation timeline.', time: '5 days ago', person: 'Sam Pierce', personColor: 'var(--brand)' },
+  { id: 3, type: 'meeting', title: 'Meeting scheduled', desc: 'Technical evaluation call booked with engineering team. 60 min slot confirmed.', time: '8 days ago', person: 'Sam Pierce', personColor: 'var(--brand)' },
+  { id: 4, type: 'note', title: 'Deal created', desc: 'Initial qualification complete. Budget confirmed, timeline Q2.', time: '14 days ago', person: 'Sam Pierce', personColor: 'var(--brand)' },
 ]
 
 const typeColor = { call: '#00BDA5', email: '#0091AE', meeting: '#7A5AF8', note: '#F5C26B' }
@@ -97,8 +99,8 @@ export default function DealPage() {
                 size={28}
                 shape="square"
                 style={{
-                  background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)',
-                  color: '#FF7A59', fontSize: '10px', fontWeight: '700', borderRadius: '6px',
+                  background: 'var(--brand-dim)', border: '1px solid var(--brand-border)',
+                  color: 'var(--brand)', fontSize: '10px', fontWeight: '700', borderRadius: '6px',
                 }}
               >
                 {deal.company.slice(0, 2).toUpperCase()}
@@ -116,7 +118,7 @@ export default function DealPage() {
                   <Link
                     to={`/people/${contact.id}`}
                     style={{ fontSize: '13px', color: 'var(--text-secondary)', textDecoration: 'none' }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#FF7A59'}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
                     onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
                   >
                     {contact.name}
@@ -166,9 +168,7 @@ export default function DealPage() {
                       </div>
                       <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 6px 0' }}>{act.desc}</p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Avatar size={16} style={{ background: 'rgba(255,122,89,0.1)', color: '#FF7A59', fontSize: '7px', fontWeight: '700' }}>
-                          {act.person.split(' ').map(w => w[0]).join('')}
-                        </Avatar>
+                        <OwnerAvatar name={act.person} size={16} />
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{act.person}</span>
                       </div>
                     </div>
@@ -203,7 +203,7 @@ export default function DealPage() {
             </div>
             <div style={{
               fontFamily: "'Lexend', sans-serif", fontSize: '28px', fontWeight: '700',
-              color: '#FF7A59', letterSpacing: '-1px',
+              color: 'var(--brand)', letterSpacing: '-1px',
             }}>
               {formatCurrency(deal.value)}
             </div>
@@ -218,12 +218,7 @@ export default function DealPage() {
             </Descriptions.Item>
             <Descriptions.Item label="Owner">
               <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                <Avatar
-                  size={20}
-                  style={{ background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)', color: '#FF7A59', fontSize: '8px', fontWeight: '700' }}
-                >
-                  {ownerInitials}
-                </Avatar>
+                <OwnerAvatar name={deal.owner} size={20} />
                 <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{deal.owner}</span>
               </div>
             </Descriptions.Item>
@@ -235,7 +230,7 @@ export default function DealPage() {
                 <Link
                   to={`/people/${contact.id}`}
                   style={{ fontSize: '12.5px', color: 'var(--text-secondary)', textDecoration: 'none' }}
-                  onMouseEnter={e => e.currentTarget.style.color = '#FF7A59'}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--brand)'}
                   onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
                 >
                   {contact.name}
@@ -267,8 +262,8 @@ export default function DealPage() {
               block
               icon={<CheckOutlined />}
               style={{
-                background: 'rgba(0,189,165,0.1)', borderColor: 'rgba(0,189,165,0.3)',
-                color: '#00BDA5', fontWeight: '500',
+                background: 'var(--success-subtle)', borderColor: 'rgba(0,189,165,0.3)',
+                color: 'var(--success)', fontWeight: '500',
               }}
             >
               Mark as Won

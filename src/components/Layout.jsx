@@ -102,7 +102,7 @@ function NavItem({ item }) {
         height: '40px',
         margin: '2px auto',
         borderRadius: 'var(--radius-sm)',
-        color: isActive ? '#FF7A59' : hovered ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.45)',
+        color: isActive ? 'var(--brand)' : hovered ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.45)',
         background: isActive ? 'rgba(255,122,89,0.15)' : hovered ? 'rgba(255,255,255,0.07)' : 'transparent',
         transition: 'background 0.12s ease, color 0.12s ease',
         textDecoration: 'none',
@@ -171,7 +171,7 @@ export default function Layout({ children }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: '40px', height: '40px', margin: '0 auto',
               borderRadius: 'var(--radius-sm)',
-              color: isActive ? '#FF7A59' : 'rgba(255,255,255,0.45)',
+              color: isActive ? 'var(--brand)' : 'rgba(255,255,255,0.45)',
               background: isActive ? 'rgba(255,122,89,0.15)' : 'transparent',
               textDecoration: 'none',
               transition: 'background 0.12s, color 0.12s',
@@ -184,7 +184,7 @@ export default function Layout({ children }) {
 
           <div title="Alex Johnson" style={{
             width: '30px', height: '30px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #FF7A59, #E8614A)',
+            background: 'linear-gradient(135deg, var(--brand), var(--brand-hover))',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', marginBottom: '4px',
           }}>
@@ -340,7 +340,7 @@ export default function Layout({ children }) {
             >
               <div style={{
                 width: '28px', height: '28px', borderRadius: '50%',
-                background: 'linear-gradient(135deg, #FF7A59, #E8614A)',
+                background: 'linear-gradient(135deg, var(--brand), var(--brand-hover))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <span style={{ color: '#fff', fontSize: '10px', fontWeight: '700' }}>AJ</span>

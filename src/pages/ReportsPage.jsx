@@ -5,17 +5,19 @@ import { stageMeta } from '../utils/crm'
 import { Card, Statistic, Tag, Table, Tabs, Progress, Avatar, Button } from 'antd'
 
 const MONTHLY = [
-  { month: 'Nov', pipeline: 148000, closed: 0,      lost: 22000 },
-  { month: 'Dec', pipeline: 193000, closed: 38000,  lost: 15000 },
-  { month: 'Jan', pipeline: 265000, closed: 55000,  lost: 31000 },
-  { month: 'Feb', pipeline: 312000, closed: 81000,  lost: 28000 },
-  { month: 'Mar', pipeline: 389000, closed: 108000, lost: 52000 },
-  { month: 'Apr', pipeline: 531000, closed: 162000, lost: 78000 },
+  { month: 'Nov', pipeline: 312000, closed: 143000, lost: 22000 },
+  { month: 'Dec', pipeline: 405000, closed: 210000, lost: 78000 },
+  { month: 'Jan', pipeline: 481000, closed: 281000, lost: 52000 },
+  { month: 'Feb', pipeline: 544000, closed: 185000, lost: 52000 },
+  { month: 'Mar', pipeline: 612000, closed: 264000, lost: 38000 },
+  { month: 'Apr', pipeline: 743000, closed: 232000, lost: 0      },
 ]
 
 const OWNER_PERF = [
-  { name: 'Sam Pierce',  initials: 'SP', pipeline: 453000, won: 95000,  lost: 78000, deals: 7, winRate: 55 },
-  { name: 'Maria Gould', initials: 'MG', pipeline: 90000,  won: 0,      lost: 52000, deals: 5, winRate: 0  },
+  { name: 'Sam Pierce',  initials: 'SP', pipeline: 660000, won: 382000, lost: 156000, deals: 14, winRate: 71 },
+  { name: 'Alex Torres', initials: 'AT', pipeline: 387000, won: 258000, lost: 88000,  deals: 11, winRate: 68 },
+  { name: 'Maria Gould', initials: 'MG', pipeline: 138000, won: 114000, lost: 52000,  deals: 8,  winRate: 60 },
+  { name: 'Nina Watts',  initials: 'NW', pipeline: 31000,  won: 102000, lost: 36000,  deals: 7,  winRate: 64 },
 ]
 
 function SvgBarChart({ data }) {
@@ -105,17 +107,17 @@ function DonutChart({ won, lost }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '3px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#00BDA5', flexShrink: 0 }} />
+            <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--success)', flexShrink: 0 }} />
             <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Closed Won</span>
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', fontWeight: '600', color: '#00BDA5' }}>{won} deals</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', fontWeight: '600', color: 'var(--success)' }}>{won} deals</div>
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '3px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#F2545B', opacity: 0.5, flexShrink: 0 }} />
+            <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--danger)', opacity: 0.5, flexShrink: 0 }} />
             <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Closed Lost</span>
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', fontWeight: '600', color: '#F2545B', opacity: 0.7 }}>{lost} deals</div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', fontWeight: '600', color: 'var(--danger)', opacity: 0.7 }}>{lost} deals</div>
         </div>
       </div>
     </div>
@@ -185,7 +187,7 @@ export default function ReportsPage() {
       key: 'value',
       width: 120,
       render: v => (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#FF7A59' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: 'var(--brand)' }}>
           {formatCurrency(v)}
         </span>
       ),
@@ -232,8 +234,8 @@ export default function ReportsPage() {
       {/* KPI Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
         {[
-          { label: 'Active Pipeline', value: formatCurrency(pipelineValue), sub: 'vs last quarter', delta: '+18%', accent: '#FF7A59' },
-          { label: 'Won This Quarter', value: formatCurrency(wonValue), sub: 'vs last quarter', delta: '+34%', accent: '#00BDA5' },
+          { label: 'Active Pipeline', value: formatCurrency(pipelineValue), sub: 'vs last quarter', delta: '+18%', accent: 'var(--brand)' },
+          { label: 'Won This Quarter', value: formatCurrency(wonValue), sub: 'vs last quarter', delta: '+34%', accent: 'var(--success)' },
           { label: 'Win Rate', value: winRate + '%', sub: 'closed deals', delta: '+6%', accent: '#0091AE' },
           { label: 'Avg Deal Size', value: formatCurrency(avgDealSize), sub: 'all closed', delta: '+11%', accent: 'var(--text-primary)' },
         ].map((kpi, i) => (
@@ -246,8 +248,8 @@ export default function ReportsPage() {
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '8px' }}>
               <Tag style={{
-                color: kpi.delta.startsWith('+') ? '#00BDA5' : '#F2545B',
-                background: kpi.delta.startsWith('+') ? 'rgba(0,189,165,0.08)' : 'rgba(242,84,91,0.08)',
+                color: kpi.delta.startsWith('+') ? 'var(--success)' : 'var(--danger)',
+                background: kpi.delta.startsWith('+') ? 'var(--success-subtle)' : 'var(--danger-subtle)',
                 borderColor: 'transparent',
                 fontSize: '11px', fontWeight: '600',
               }}>
@@ -264,7 +266,7 @@ export default function ReportsPage() {
         <Card styles={{ body: { padding: 0 } }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Pipeline by Stage</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: '#FF7A59', fontWeight: '500' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: 'var(--brand)', fontWeight: '500' }}>
               {formatCurrency(pipelineValue)} total
             </span>
           </div>
@@ -282,13 +284,13 @@ export default function ReportsPage() {
           <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <DonutChart won={won.length} lost={lost.length} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <div style={{ background: 'rgba(0,189,165,0.08)', border: '1px solid rgba(0,189,165,0.2)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: '#00BDA5', marginBottom: '4px' }}>Won Value</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '600', color: '#00BDA5' }}>{formatCurrency(wonValue)}</div>
+              <div style={{ background: 'var(--success-subtle)', border: '1px solid rgba(0,189,165,0.2)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
+                <div style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--success)', marginBottom: '4px' }}>Won Value</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '600', color: 'var(--success)' }}>{formatCurrency(wonValue)}</div>
               </div>
-              <div style={{ background: 'rgba(242,84,91,0.08)', border: '1px solid rgba(242,84,91,0.2)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: '#F2545B', marginBottom: '4px' }}>Lost Value</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '600', color: '#F2545B' }}>{formatCurrency(lostValue)}</div>
+              <div style={{ background: 'var(--danger-subtle)', border: '1px solid rgba(242,84,91,0.2)', borderRadius: 'var(--radius-sm)', padding: '10px 12px' }}>
+                <div style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--danger)', marginBottom: '4px' }}>Lost Value</div>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '600', color: 'var(--danger)' }}>{formatCurrency(lostValue)}</div>
               </div>
             </div>
           </div>
@@ -329,7 +331,7 @@ export default function ReportsPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                   <Avatar
                     size={32}
-                    style={{ background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)', color: '#FF7A59', fontSize: '11px', fontWeight: '700', flexShrink: 0 }}
+                    style={{ background: 'var(--brand-dim)', border: '1px solid var(--brand-border)', color: 'var(--brand)', fontSize: '11px', fontWeight: '700', flexShrink: 0 }}
                   >
                     {rep.initials}
                   </Avatar>
@@ -337,7 +339,7 @@ export default function ReportsPage() {
                     <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>{rep.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{rep.deals} deals · {rep.winRate}% win rate</div>
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#00BDA5' }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: 'var(--success)' }}>
                     {formatCurrency(rep.won)}
                   </div>
                 </div>
@@ -350,7 +352,7 @@ export default function ReportsPage() {
                   </div>
                   <div style={{ background: 'var(--bg-elevated)', borderRadius: 'var(--radius-sm)', padding: '7px 10px' }}>
                     <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '2px' }}>Lost</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: '#F2545B', fontWeight: '500', opacity: 0.8 }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', color: 'var(--danger)', fontWeight: '500', opacity: 0.8 }}>
                       {formatCurrency(rep.lost)}
                     </div>
                   </div>
@@ -393,7 +395,7 @@ export default function ReportsPage() {
           <h1 style={{ fontFamily: "'Lexend', sans-serif", fontSize: '26px', fontWeight: '700', color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '4px' }}>
             Reports
           </h1>
-          <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Q2 2025 · Last updated just now</div>
+          <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Q2 2026 · Last updated just now</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
@@ -405,7 +407,7 @@ export default function ReportsPage() {
                 padding: '6px 14px', fontSize: '12px',
                 fontWeight: r === 'Last 90d' ? '600' : '400',
                 background: r === 'Last 90d' ? 'rgba(255,122,89,0.08)' : 'transparent',
-                color: r === 'Last 90d' ? '#FF7A59' : 'var(--text-secondary)',
+                color: r === 'Last 90d' ? 'var(--brand)' : 'var(--text-secondary)',
                 border: 'none', cursor: 'pointer',
                 borderRight: r !== 'YTD' ? '1px solid var(--border)' : 'none',
               }}>{r}</button>

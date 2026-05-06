@@ -1,0 +1,14 @@
+// Design token aggregator — import this file to access all tokens.
+//
+// In component .scss files:
+//   @use '../../styles/tokens' as *;
+//
+// Then use SCSS variables ($coral-500, $space-4, etc.) at compile time,
+// or CSS custom properties (var(--brand), var(--space-4), etc.) at runtime.
+
+@forward './colors';
+@forward './typography';
+@forward './spacing';
+@forward './radius';
+@forward './elevation';
+@forward './motion';

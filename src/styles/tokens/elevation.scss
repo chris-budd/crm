@@ -1,0 +1,14 @@
+// ─── Elevation / shadow tokens ────────────────────────────────────────────────
+// Navy-tinted shadows keep the palette cohesive on white cards.
+
+$shadow-card:     0 2px 8px rgba(45, 62, 80, 0.08), 0 0 0 1px #DFE3EB;
+$shadow-elevated: 0 4px 16px rgba(45, 62, 80, 0.12), 0 0 0 1px #DFE3EB;
+$shadow-dropdown: 0 8px 24px rgba(45, 62, 80, 0.14), 0 0 0 1px #DFE3EB;
+$shadow-modal:    0 20px 60px rgba(45, 62, 80, 0.20);
+
+:root {
+  --shadow-card:     #{$shadow-card};
+  --shadow-elevated: #{$shadow-elevated};
+  --shadow-dropdown: #{$shadow-dropdown};
+  --shadow-modal:    #{$shadow-modal};
+}

@@ -2,6 +2,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { COMPANIES, PEOPLE, DEALS } from '../data/crm'
 import { formatCurrency, formatARR, stageMeta } from '../utils/crm'
 import { Card, Tag, Avatar, Button, Table, Tabs, Breadcrumb, Descriptions, Statistic, Divider } from 'antd'
+import { CardHeader } from '../components/CardHeader/CardHeader'
+import { OwnerAvatar } from '../components/OwnerAvatar/OwnerAvatar'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { MailOutlined, PlusOutlined } from '@ant-design/icons'
 
 function companyColor(name) {
@@ -14,8 +17,8 @@ function companyColor(name) {
 const TAG_COLORS = {
   champion: { color: '#7A5AF8', bg: 'rgba(122,90,248,0.08)', border: 'rgba(122,90,248,0.2)' },
   technical: { color: '#0091AE', bg: 'rgba(0,145,174,0.08)', border: 'rgba(0,145,174,0.2)' },
-  'decision-maker': { color: '#FF7A59', bg: 'rgba(255,122,89,0.08)', border: 'rgba(255,122,89,0.2)' },
-  executive: { color: '#00BDA5', bg: 'rgba(0,189,165,0.08)', border: 'rgba(0,189,165,0.2)' },
+  'decision-maker': { color: 'var(--brand)', bg: 'var(--brand-subtle)', border: 'rgba(255,122,89,0.2)' },
+  executive: { color: 'var(--success)', bg: 'var(--success-subtle)', border: 'rgba(0,189,165,0.2)' },
 }
 
 const COMPANY_ACTIVITIES = [
@@ -90,9 +93,9 @@ export default function CompanyPage() {
       key: 'value',
       width: 110,
       render: v => (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#FF7A59' }}>
+        <MonoValue size="13px" weight="500" color="var(--brand)">
           {formatCurrency(v)}
-        </span>
+        </MonoValue>
       ),
     },
     {
@@ -135,7 +138,7 @@ export default function CompanyPage() {
             <Statistic
               title={<span style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>ARR</span>}
               value={formatARR(company.arr)}
-              valueStyle={{ color: '#00BDA5', fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}
+              valueStyle={{ color: 'var(--success)', fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}
               formatter={v => v}
             />
             <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>annual recurring revenue</div>
@@ -144,7 +147,7 @@ export default function CompanyPage() {
             <Statistic
               title={<span style={{ fontSize: '10px', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Pipeline</span>}
               value={formatCurrency(pipelineValue)}
-              valueStyle={{ color: '#FF7A59', fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}
+              valueStyle={{ color: 'var(--brand)', fontSize: '20px', fontWeight: '700', letterSpacing: '-0.5px' }}
               formatter={v => v}
             />
             <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>active deals</div>
@@ -161,9 +164,7 @@ export default function CompanyPage() {
 
         {/* Activity */}
         <Card styles={{ body: { padding: 0 } }}>
-          <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)' }}>
-            <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>Recent Activity</span>
-          </div>
+          <CardHeader title="Recent Activity" />
           <div style={{ padding: '4px 0' }}>
             {COMPANY_ACTIVITIES.map((act, i) => (
               <div key={act.id} style={{
@@ -202,16 +203,16 @@ export default function CompanyPage() {
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: 'var(--text-secondary)' }}>{company.employees.toLocaleString()}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Website">
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: '#FF7A59' }}>{company.domain}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: 'var(--brand)' }}>{company.domain}</span>
           </Descriptions.Item>
           <Descriptions.Item label="ARR">
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: '#00BDA5' }}>{formatARR(company.arr)}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12.5px', color: 'var(--success)' }}>{formatARR(company.arr)}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Contacts">
             <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{companyPeople.length} person{companyPeople.length !== 1 ? 's' : ''}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Active Deals">
-            <span style={{ fontSize: '12.5px', color: '#FF7A59' }}>{company.activeDeals}</span>
+            <span style={{ fontSize: '12.5px', color: 'var(--brand)' }}>{company.activeDeals}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Owner">
             <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{company.owner}</span>
@@ -278,9 +279,7 @@ export default function CompanyPage() {
             <Tag style={{ color: meta.color, background: meta.bg, borderColor: meta.border, fontWeight: 500, flexShrink: 0 }}>
               {meta.label}
             </Tag>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', fontWeight: '500', color: '#FF7A59', flexShrink: 0 }}>
-              {formatCurrency(person.dealValue)}
-            </div>
+            <MonoValue size="13px" weight="500" color="var(--brand)" style={{ flexShrink: 0 }}>{formatCurrency(person.dealValue)}</MonoValue>
           </div>
         )
       })}
@@ -325,7 +324,7 @@ export default function CompanyPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                 <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{company.industry}</span>
                 <span style={{ color: 'var(--border-strong)' }}>·</span>
-                <a href={`https://${company.domain}`} style={{ fontSize: '13px', color: '#FF7A59', fontFamily: "'JetBrains Mono', monospace" }}>
+                <a href={`https://${company.domain}`} style={{ fontSize: '13px', color: 'var(--brand)', fontFamily: "'JetBrains Mono', monospace" }}>
                   {company.domain}
                 </a>
               </div>
@@ -334,7 +333,7 @@ export default function CompanyPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Avatar
                     size={20}
-                    style={{ background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)', color: '#FF7A59', fontSize: '8px', fontWeight: '700' }}
+                    style={{ background: 'var(--brand-dim)', border: '1px solid var(--brand-border)', color: 'var(--brand)', fontSize: '8px', fontWeight: '700' }} /* OwnerAvatar handles this pattern elsewhere */
                   >
                     {ownerInitials}
                   </Avatar>

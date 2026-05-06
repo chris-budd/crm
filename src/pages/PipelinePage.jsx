@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { DEALS, PIPELINE_STAGES } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { Card, Tag, Progress, Avatar, Button } from 'antd'
+import { OwnerAvatar } from '../components/OwnerAvatar/OwnerAvatar'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { PlusOutlined } from '@ant-design/icons'
 
 function DealCard({ deal, navigate }) {
@@ -38,7 +40,7 @@ function DealCard({ deal, navigate }) {
         </div>
         <div style={{
           fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '500',
-          color: '#FF7A59', flexShrink: 0,
+          color: 'var(--brand)', flexShrink: 0,
         }}>
           {formatCurrency(deal.value)}
         </div>
@@ -69,26 +71,14 @@ function DealCard({ deal, navigate }) {
             <line x1="8" y1="2" x2="8" y2="6" />
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '10.5px', color: 'var(--text-secondary)' }}>
-            {closeFmt}
-          </span>
+          <MonoValue size="10.5px" color="var(--text-secondary)">{closeFmt}</MonoValue>
         </div>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: stageColor, fontWeight: '500' }}>
-          {deal.probability}%
-        </span>
+        <MonoValue size="11px" weight="500" color={stageColor}>{deal.probability}%</MonoValue>
       </div>
 
       {/* Owner */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
-        <Avatar
-          size={18}
-          style={{
-            background: 'rgba(255,122,89,0.1)', border: '1px solid rgba(255,122,89,0.25)',
-            color: '#FF7A59', fontSize: '8px', fontWeight: '600', flexShrink: 0,
-          }}
-        >
-          {ownerInitials}
-        </Avatar>
+        <OwnerAvatar name={deal.owner} size={18} />
         <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{deal.owner}</span>
       </div>
 
@@ -132,9 +122,7 @@ export default function PipelinePage() {
             fontFamily: "'Lexend', sans-serif", fontSize: '22px', fontWeight: '700',
             color: 'var(--text-primary)', letterSpacing: '-0.5px',
           }}>Pipeline</h1>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', fontWeight: '500', color: '#FF7A59' }}>
-            {formatCurrency(totalPipeline)} total
-          </span>
+          <MonoValue size="14px" weight="500" color="var(--brand)">{formatCurrency(totalPipeline)} total</MonoValue>
         </div>
         <Button type="primary" icon={<PlusOutlined />}>New Deal</Button>
       </div>
@@ -170,9 +158,7 @@ export default function PipelinePage() {
                     {deals.length}
                   </Tag>
                 </div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'var(--text-secondary)', paddingLeft: '15px' }}>
-                  {colTotal > 0 ? formatCurrency(colTotal) : '—'}
-                </div>
+                <MonoValue size="11px" color="var(--text-secondary)" style={{ paddingLeft: '15px', display: 'block' }}>{colTotal > 0 ? formatCurrency(colTotal) : '—'}</MonoValue>
               </div>
 
               {/* Cards */}

@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { PEOPLE } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { Button, Input, Table, Tag, Avatar } from 'antd'
+import { PageHeader } from '../components/PageHeader/PageHeader'
+import { MonoValue } from '../components/MonoValue/MonoValue'
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons'
 
 const TAG_COLORS = {
   champion: { color: '#7A5AF8', bg: 'rgba(122,90,248,0.08)', border: 'rgba(122,90,248,0.2)' },
   technical: { color: '#0091AE', bg: 'rgba(0,145,174,0.08)', border: 'rgba(0,145,174,0.2)' },
-  'decision-maker': { color: '#FF7A59', bg: 'rgba(255,122,89,0.08)', border: 'rgba(255,122,89,0.2)' },
-  executive: { color: '#00BDA5', bg: 'rgba(0,189,165,0.08)', border: 'rgba(0,189,165,0.2)' },
+  'decision-maker': { color: 'var(--brand)', bg: 'rgba(255,122,89,0.08)', border: 'rgba(255,122,89,0.2)' },
+  executive: { color: 'var(--success)', bg: 'rgba(0,189,165,0.08)', border: 'rgba(0,189,165,0.2)' },
 }
 
 const COMPANY_DOMAINS = {
@@ -91,9 +93,7 @@ export default function PeoplePage() {
       key: 'dealValue',
       width: 110,
       render: (_, person) => (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '12px', fontWeight: '500', color: '#FF7A59' }}>
-          {formatCurrency(person.dealValue)}
-        </span>
+        <MonoValue color="var(--brand)">{formatCurrency(person.dealValue)}</MonoValue>
       ),
     },
     {
@@ -101,9 +101,7 @@ export default function PeoplePage() {
       key: 'lastActivity',
       width: 110,
       render: (_, person) => (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11.5px', color: 'var(--text-muted)' }}>
-          {person.lastActivity}
-        </span>
+        <MonoValue size="11.5px" color="var(--text-muted)">{person.lastActivity}</MonoValue>
       ),
     },
     {
@@ -138,16 +136,11 @@ export default function PeoplePage() {
   return (
     <div style={{ maxWidth: '100%' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <div>
-          <h1 style={{
-            fontFamily: "'Lexend', sans-serif", fontSize: '26px', fontWeight: '700',
-            color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '4px',
-          }}>People</h1>
-          <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{PEOPLE.length} contacts</div>
-        </div>
-        <Button type="primary" icon={<PlusOutlined />}>Add contact</Button>
-      </div>
+      <PageHeader
+        title="People"
+        subtitle={`${PEOPLE.length} contacts`}
+        action={<Button type="primary" icon={<PlusOutlined />}>Add contact</Button>}
+      />
 
       {/* Search */}
       <Input

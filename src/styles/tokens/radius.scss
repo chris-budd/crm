@@ -1,0 +1,20 @@
+// ─── Border radius tokens ─────────────────────────────────────────────────────
+
+$radius-none: 0;
+$radius-xs:   3px;
+$radius-sm:   5px;
+$radius-md:   8px;    // default card / input
+$radius-lg:   12px;
+$radius-xl:   16px;
+$radius-full: 9999px; // pills and circular avatars
+
+:root {
+  --radius-none: #{$radius-none};
+  --radius-xs:   #{$radius-xs};
+  --radius-sm:   #{$radius-sm};
+  --radius:      #{$radius-md};   // legacy alias — prefer --radius-md in new code
+  --radius-md:   #{$radius-md};
+  --radius-lg:   #{$radius-lg};
+  --radius-xl:   #{$radius-xl};
+  --radius-full: #{$radius-full};
+}

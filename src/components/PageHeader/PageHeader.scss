@@ -1,0 +1,23 @@
+@use '../../styles/tokens' as *;
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: $space-5;
+}
+
+.page-header__title {
+  font-family: $font-sans;
+  font-size: $text-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  letter-spacing: $letter-spacing-tight;
+  margin-bottom: $space-1;
+}
+
+.page-header__subtitle {
+  font-size: $text-base;
+  color: var(--text-secondary);
+  margin: 0;
+}

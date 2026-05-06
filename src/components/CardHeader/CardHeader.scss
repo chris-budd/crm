@@ -1,0 +1,15 @@
+@use '../../styles/tokens' as *;
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4 $space-5;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header__title {
+  font-size: $text-base;
+  font-weight: $font-weight-semibold;
+  color: var(--text-primary);
+}

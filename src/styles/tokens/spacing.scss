@@ -1,0 +1,42 @@
+// ─── Spacing tokens ───────────────────────────────────────────────────────────
+// 4px base grid. Use these for padding, margin, and gap — not arbitrary values.
+
+$space-1:  4px;
+$space-2:  8px;
+$space-3:  12px;
+$space-4:  16px;
+$space-5:  20px;
+$space-6:  24px;
+$space-7:  32px;
+$space-8:  40px;
+$space-9:  48px;
+$space-10: 64px;
+
+// Named aliases for common use
+$gap-xs:  $space-1;   //  4px
+$gap-sm:  $space-2;   //  8px
+$gap-md:  $space-3;   // 12px
+$gap-lg:  $space-4;   // 16px
+$gap-xl:  $space-5;   // 20px
+$gap-2xl: $space-6;   // 24px
+
+$page-padding: $space-6;   // 24px — content area inset
+$card-padding: $space-5;   // 20px — card inner padding
+$section-gap:  $space-5;   // 20px — vertical gap between page sections
+
+:root {
+  --space-1:  #{$space-1};
+  --space-2:  #{$space-2};
+  --space-3:  #{$space-3};
+  --space-4:  #{$space-4};
+  --space-5:  #{$space-5};
+  --space-6:  #{$space-6};
+  --space-7:  #{$space-7};
+  --space-8:  #{$space-8};
+  --space-9:  #{$space-9};
+  --space-10: #{$space-10};
+
+  --page-padding: #{$page-padding};
+  --card-padding: #{$card-padding};
+  --section-gap:  #{$section-gap};
+}

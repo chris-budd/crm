@@ -1,0 +1,9 @@
+@use '../../styles/tokens' as *;
+
+.owner-avatar.ant-avatar {
+  background: var(--brand-dim);
+  border: 1px solid var(--brand-border);
+  color: var(--brand);
+  font-weight: $font-weight-semibold;
+  flex-shrink: 0;
+}
