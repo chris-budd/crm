@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 function getPageTitle(pathname) {
-  const map = { '/': 'Dashboard', '/people': 'People', '/companies': 'Companies', '/pipeline': 'Pipeline', '/reports': 'Reports', '/settings': 'Settings' }
+  const map = { '/': 'Dashboard', '/people': 'People', '/companies': 'Companies', '/pipeline': 'Pipeline', '/settings': 'Settings' }
   if (map[pathname]) return map[pathname]
   if (pathname.startsWith('/people/')) return 'Contact'
   if (pathname.startsWith('/companies/')) return 'Company'
@@ -33,12 +33,6 @@ const Icons = {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="5" height="18" rx="1" /><rect x="10" y="6" width="5" height="15" rx="1" />
       <rect x="17" y="9" width="5" height="12" rx="1" />
-    </svg>
-  ),
-  reports: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
     </svg>
   ),
   settings: (
@@ -80,7 +74,6 @@ const NAV_ITEMS = [
   { label: 'People',    to: '/people',    icon: Icons.people },
   { label: 'Companies', to: '/companies', icon: Icons.companies },
   { label: 'Pipeline',  to: '/pipeline',  icon: Icons.pipeline },
-  { label: 'Reports',   to: '/reports',   icon: Icons.reports },
 ]
 
 function NavItem({ item }) {

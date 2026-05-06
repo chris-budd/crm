@@ -8,7 +8,6 @@ import CompaniesPage from './pages/CompaniesPage'
 import CompanyPage from './pages/CompanyPage'
 import PipelinePage from './pages/PipelinePage'
 import DealPage from './pages/DealPage'
-import ReportsPage from './pages/ReportsPage'
 
 const theme = {
   token: {
@@ -85,7 +84,6 @@ export default function App() {
           <Route path="/companies/:id" element={<Layout><CompanyPage /></Layout>} />
           <Route path="/pipeline" element={<Layout><PipelinePage /></Layout>} />
           <Route path="/deals/:id" element={<Layout><DealPage /></Layout>} />
-          <Route path="/reports" element={<Layout><ReportsPage /></Layout>} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>
