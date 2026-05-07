@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Statistic, Table, Tag, Progress, Segmented } from 'antd'
+import { Card, Statistic, Table, Tag, Progress, Segmented, Button } from 'antd'
 import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { CardHeader } from '../components/CardHeader/CardHeader'
