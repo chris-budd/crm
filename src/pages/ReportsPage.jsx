@@ -7,6 +7,8 @@ import { CardHeader } from '../components/CardHeader/CardHeader'
 import { MonoValue } from '../components/MonoValue/MonoValue'
 import { OwnerAvatar } from '../components/OwnerAvatar/OwnerAvatar'
 import { PageHeader } from '../components/PageHeader/PageHeader'
+import { DownloadOutlined } from '@ant-design/icons'
+// in the CardHeader right prop:
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
@@ -197,7 +199,10 @@ export default function ReportsPage() {
 
       {/* Recent closed deals */}
       <Card styles={{ body: { padding: 0 } }}>
-        <CardHeader title="Recent Closed Deals" />
+        <CardHeader title="Recent Closed Deals" right={<Button size="small" icon={<DownloadOutlined />}
+  onClick={() => {}}>
+  Export
+</Button>} />
         <Table
           dataSource={recentClosed}
           rowKey="id"
