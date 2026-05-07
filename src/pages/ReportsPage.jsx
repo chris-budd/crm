@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Statistic, Table, Tag, Avatar, Progress } from 'antd'
+import { Card, Statistic, Table, Tag, Avatar, Progress, Button } from 'antd'
 import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { CardHeader } from '../components/CardHeader/CardHeader'
 import { MonoValue } from '../components/MonoValue/MonoValue'
+import { DownloadOutlined } from '@ant-design/icons'
 
 const NOW = new Date('2026-05-06')
 const YEAR = NOW.getFullYear()
@@ -305,7 +306,7 @@ export default function ReportsPage() {
 
       {/* Deals Table */}
       <Card styles={{ body: { padding: 0 } }}>
-        <CardHeader title="Recent Deals" />
+        <CardHeader title="Recent Deals" right={<Button size="small" icon={<DownloadOutlined />} onClick={() => {}}>Export</Button>} />
         <Table
           dataSource={recentDeals}
           rowKey="id"
