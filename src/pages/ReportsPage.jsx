@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Statistic, Table, Tag, Avatar, Progress } from 'antd'
+import { Card, Statistic, Table, Tag, Avatar, Progress, Tooltip } from 'antd'
 import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { CardHeader } from '../components/CardHeader/CardHeader'
@@ -9,6 +9,84 @@ import { MonoValue } from '../components/MonoValue/MonoValue'
 const NOW = new Date('2026-05-06')
 const YEAR = NOW.getFullYear()
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+const CHART_H = 180
+
+function BarChart({ monthly, monthlyMax }) {
+  const [hovered, setHovered] = useState(null)
+  return (
+    <div style={{ display: 'flex', alignItems: 'stretch', gap: '6px', height: `${CHART_H + 22}px` }}>
+      {monthly.map(m => {
+        const barH = m.value > 0 ? Math.max(3, (m.value / monthlyMax) * CHART_H) : 0
+        const targetBottom = m.target > 0 ? (m.target / monthlyMax) * CHART_H : null
+        const isCurrent = m.label === MONTH_LABELS[NOW.getMonth()]
+        const isHovered = hovered === m.label
+        const tooltipContent = (
+          <div style={{ fontSize: '12px', lineHeight: 1.7 }}>
+            <div style={{ fontWeight: 600, marginBottom: '2px' }}>{m.label} {YEAR}</div>
+            <div>Revenue: <strong>{formatCurrency(m.value)}</strong></div>
+            {m.target > 0 && (
+              <div style={{ color: 'rgba(255,255,255,0.75)' }}>
+                Target: {formatCurrency(m.target)}
+                {m.value > 0 && <span> &middot; {Math.round((m.value / m.target) * 100)}%</span>}
+              </div>
+            )}
+            {m.count > 0 && <div style={{ color: 'rgba(255,255,255,0.75)' }}>{m.count} deal{m.count !== 1 ? 's' : ''}</div>}
+          </div>
+        )
+        return (
+          <div
+            key={m.label}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}
+            onMouseEnter={() => setHovered(m.label)}
+            onMouseLeave={() => setHovered(null)}
+          >
+            <Tooltip title={tooltipContent} placement="top" mouseEnterDelay={0}>
+              <div style={{ flex: 1, width: '100%', position: 'relative', cursor: 'default' }}>
+                {targetBottom !== null && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: targetBottom,
+                    left: 0, right: 0,
+                    borderTop: '1.5px dashed var(--text-muted)',
+                    opacity: isHovered ? 0.9 : 0.5,
+                    zIndex: 1,
+                    transition: 'opacity 0.15s',
+                  }} />
+                )}
+                {barH > 0 && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '70%',
+                    height: `${barH}px`,
+                    background: isCurrent
+                      ? 'linear-gradient(180deg, var(--brand), var(--brand-hover))'
+                      : 'var(--brand)',
+                    opacity: isHovered ? 0.75 : 1,
+                    borderRadius: '4px 4px 0 0',
+                    transition: 'height 0.4s ease, opacity 0.15s',
+                    zIndex: 2,
+                  }} />
+                )}
+              </div>
+            </Tooltip>
+            <span style={{
+              fontSize: '10px',
+              color: isCurrent ? 'var(--brand)' : 'var(--text-muted)',
+              fontWeight: isCurrent ? 600 : 400,
+              lineHeight: 1,
+            }}>
+              {m.label}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 function Donut({ won, lost, size = 132, stroke = 18 }) {
   const total = won + lost
@@ -211,46 +289,8 @@ export default function ReportsPage() {
               </div>
             }
           />
-          <div style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '180px', position: 'relative' }}>
-              {monthly.map(m => {
-                const barH = (m.value / monthlyMax) * 160
-                const targetTop = 160 - (m.target / monthlyMax) * 160
-                const isCurrent = m.label === MONTH_LABELS[NOW.getMonth()]
-                return (
-                  <div key={m.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ flex: 1, width: '100%', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-                      {m.target > 0 && (
-                        <div style={{
-                          position: 'absolute', top: targetTop, left: 0, right: 0,
-                          borderTop: '1.5px dashed var(--text-muted)', opacity: 0.55,
-                        }} />
-                      )}
-                      <div
-                        title={`${m.label}: ${formatCurrency(m.value)} · target ${formatCurrency(m.target)}`}
-                        style={{
-                          width: '70%',
-                          height: `${barH}px`,
-                          background: isCurrent
-                            ? 'linear-gradient(180deg, var(--brand), var(--brand-hover))'
-                            : 'var(--brand)',
-                          opacity: m.value === 0 ? 0.15 : 1,
-                          borderRadius: '4px 4px 0 0',
-                          transition: 'height 0.4s ease',
-                        }}
-                      />
-                    </div>
-                    <span style={{
-                      fontSize: '10px',
-                      color: isCurrent ? 'var(--brand)' : 'var(--text-muted)',
-                      fontWeight: isCurrent ? 600 : 400,
-                    }}>
-                      {m.label}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+          <div style={{ padding: '28px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <BarChart monthly={monthly} monthlyMax={monthlyMax} />
           </div>
         </Card>
 
