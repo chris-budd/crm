@@ -148,7 +148,7 @@ export default function DashboardPage() {
             right={<Tag style={{ color: 'var(--brand)', background: 'var(--brand-subtle)', borderColor: 'var(--brand-border)', fontSize: '11px' }}>{tasks.filter(t => !t.done).length} open</Tag>}
           />
           <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
-            {tasks.map((task, i) => {
+            {[...tasks].sort((a, b) => Number(a.done) - Number(b.done)).map((task, i, sorted) => {
               const dueColor = task.due === 'Today' ? 'var(--danger)' : task.due === 'Tomorrow' ? 'var(--warning)' : 'var(--text-muted)'
               const dueBg = task.due === 'Today' ? 'rgba(242,84,91,0.08)' : task.due === 'Tomorrow' ? 'rgba(245,194,107,0.08)' : 'transparent'
               const dueBorder = task.due === 'Today' ? 'rgba(239,68,68,0.2)' : task.due === 'Tomorrow' ? 'rgba(245,158,11,0.2)' : 'var(--border)'
@@ -158,7 +158,7 @@ export default function DashboardPage() {
                   key={task.id}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 16px',
-                    borderBottom: i < tasks.length - 1 ? '1px solid var(--border)' : 'none',
+                    borderBottom: i < sorted.length - 1 ? '1px solid var(--border)' : 'none',
                     opacity: task.done ? 0.5 : 1,
                   }}
                 >
