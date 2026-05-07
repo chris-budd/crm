@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, Statistic, Table, Tag, Avatar, Progress } from 'antd'
 import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
@@ -41,8 +41,11 @@ function Donut({ won, lost, size = 132, stroke = 18 }) {
   )
 }
 
+const CHART_H = 160
+
 export default function ReportsPage() {
   const navigate = useNavigate()
+  const [hoveredBar, setHoveredBar] = useState(null)
 
   const stats = useMemo(() => {
     const active = DEALS.filter(d => d.stage !== 'closed_won' && d.stage !== 'closed_lost')
@@ -195,7 +198,7 @@ export default function ReportsPage() {
 
       {/* Row 3: Monthly Revenue + Rep Performance */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
-        <Card styles={{ body: { padding: 0 } }}>
+        <Card styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column' } }}>
           <CardHeader
             title={`Monthly Revenue · ${YEAR}`}
             right={
@@ -205,45 +208,84 @@ export default function ReportsPage() {
                   Closed Won
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
-                  <span style={{ width: '10px', height: '2px', background: 'var(--text-muted)' }} />
+                  <span style={{ display: 'inline-block', width: '14px', borderTop: '2px dashed var(--text-muted)' }} />
                   Target
                 </span>
               </div>
             }
           />
-          <div style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '180px', position: 'relative' }}>
-              {monthly.map(m => {
-                const barH = (m.value / monthlyMax) * 160
-                const targetTop = 160 - (m.target / monthlyMax) * 160
-                const isCurrent = m.label === MONTH_LABELS[NOW.getMonth()]
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '20px 20px 16px' }}>
+            <div style={{ width: '100%', display: 'flex', alignItems: 'flex-end', gap: '6px' }}>
+              {monthly.map((m, idx) => {
+                const barH = monthlyMax > 0 ? Math.round((m.value / monthlyMax) * CHART_H) : 0
+                const targetH = monthlyMax > 0 ? Math.round((m.target / monthlyMax) * CHART_H) : 0
+                const isCurrent = idx === NOW.getMonth()
+                const isHov = hoveredBar === idx
                 return (
-                  <div key={m.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                    <div style={{ flex: 1, width: '100%', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+                  <div key={m.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div
+                      style={{ height: CHART_H, width: '100%', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+                    >
+                      {/* target line: positioned from bottom */}
                       {m.target > 0 && (
                         <div style={{
-                          position: 'absolute', top: targetTop, left: 0, right: 0,
-                          borderTop: '1.5px dashed var(--text-muted)', opacity: 0.55,
+                          position: 'absolute',
+                          bottom: targetH,
+                          left: 0, right: 0,
+                          borderTop: '1.5px dashed rgba(153,172,194,0.65)',
+                          pointerEvents: 'none',
                         }} />
                       )}
+                      {/* bar */}
                       <div
-                        title={`${m.label}: ${formatCurrency(m.value)} · target ${formatCurrency(m.target)}`}
+                        onMouseEnter={() => setHoveredBar(idx)}
+                        onMouseLeave={() => setHoveredBar(null)}
                         style={{
-                          width: '70%',
-                          height: `${barH}px`,
+                          width: '72%',
+                          height: Math.max(barH, m.value > 0 ? 4 : 0),
                           background: isCurrent
-                            ? 'linear-gradient(180deg, var(--brand), var(--brand-hover))'
-                            : 'var(--brand)',
-                          opacity: m.value === 0 ? 0.15 : 1,
+                            ? 'linear-gradient(180deg, #ff9a80, var(--brand))'
+                            : isHov ? '#ff9a80' : 'var(--brand)',
+                          opacity: m.value === 0 ? 0.12 : 1,
                           borderRadius: '4px 4px 0 0',
-                          transition: 'height 0.4s ease',
+                          transition: 'background 0.15s, transform 0.15s',
+                          transform: isHov && m.value > 0 ? 'scaleY(1.03)' : 'none',
+                          transformOrigin: 'bottom',
+                          cursor: m.value > 0 ? 'pointer' : 'default',
                         }}
                       />
+                      {/* hover tooltip */}
+                      {isHov && m.value > 0 && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: Math.max(barH, 4) + 10,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: '#2e3e50',
+                          color: '#fff',
+                          borderRadius: '8px',
+                          padding: '8px 12px',
+                          fontSize: '12px',
+                          whiteSpace: 'nowrap',
+                          zIndex: 20,
+                          pointerEvents: 'none',
+                          boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                          lineHeight: 1.6,
+                        }}>
+                          <div style={{ fontWeight: 600, marginBottom: '3px', color: '#fff' }}>{m.label} {YEAR}</div>
+                          <div style={{ color: 'var(--brand)' }}>Revenue &nbsp;{formatCurrency(m.value)}</div>
+                          <div style={{ color: 'rgba(255,255,255,0.55)' }}>Target &nbsp;&nbsp;&nbsp;{formatCurrency(m.target)}</div>
+                          {m.count > 0 && <div style={{ color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>{m.count} deal{m.count !== 1 ? 's' : ''} closed</div>}
+                        </div>
+                      )}
                     </div>
+                    {/* baseline axis */}
+                    <div style={{ width: '100%', height: '1px', background: 'var(--border)' }} />
                     <span style={{
                       fontSize: '10px',
                       color: isCurrent ? 'var(--brand)' : 'var(--text-muted)',
                       fontWeight: isCurrent ? 600 : 400,
+                      marginTop: '5px',
                     }}>
                       {m.label}
                     </span>
