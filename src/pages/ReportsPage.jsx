@@ -202,13 +202,14 @@ export default function ReportsPage() {
   return (
     <div style={{ maxWidth: '100%' }}>
       {/* KPI Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-[14px] mb-[24px]">
         {kpis.map((kpi, i) => (
           <Card key={kpi.label} className={`anim-fade-up anim-${i + 1}`} styles={{ body: { padding: '20px' } }}>
             <Statistic
               title={<span style={{ fontSize: '11px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>{kpi.label}</span>}
               value={kpi.value}
-              valueStyle={{ color: kpi.accent, fontSize: '36px', fontWeight: 700, letterSpacing: '-1px', lineHeight: 1 }}
+              valueStyle={{ color: kpi.accent, fontWeight: 700, letterSpacing: '-1px', lineHeight: 1 }}
+              className="kpi-statistic"
               formatter={v => v}
             />
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>{kpi.sub}</div>
@@ -217,7 +218,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Row 2: Pipeline by Stage + Win/Loss */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-[14px] mb-[24px]">
         <Card styles={{ body: { padding: 0 } }}>
           <CardHeader title="Pipeline by Stage" />
           <div style={{ padding: '16px 20px 20px' }}>
@@ -272,7 +273,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Row 3: Monthly Revenue + Rep Performance */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-[14px] mb-[24px]">
         <Card styles={{ body: { padding: 0 } }}>
           <CardHeader
             title={`Monthly Revenue · ${YEAR}`}
@@ -351,6 +352,7 @@ export default function ReportsPage() {
           rowKey="id"
           pagination={false}
           size="middle"
+          scroll={{ x: 480 }}
           onRow={(record) => ({ onClick: () => navigate(`/deals/${record.id}`), style: { cursor: 'pointer' } })}
           columns={[
             {
@@ -369,10 +371,10 @@ export default function ReportsPage() {
                 return <Tag style={{ color: m.color, background: m.bg, borderColor: m.border, fontWeight: 500 }}>{m.label}</Tag>
               },
             },
-            { title: 'Owner', dataIndex: 'owner', key: 'owner', render: v => <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{v}</span> },
-            { title: 'Type', dataIndex: 'type', key: 'type', render: v => <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{v}</span> },
+            { title: 'Owner', dataIndex: 'owner', key: 'owner', responsive: ['md'], render: v => <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{v}</span> },
+            { title: 'Type', dataIndex: 'type', key: 'type', responsive: ['lg'], render: v => <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{v}</span> },
             {
-              title: 'Close Date', dataIndex: 'closeDate', key: 'closeDate', align: 'right',
+              title: 'Close Date', dataIndex: 'closeDate', key: 'closeDate', align: 'right', responsive: ['sm'],
               render: v => <MonoValue size="12px" color="var(--text-muted)">{v}</MonoValue>,
             },
             {

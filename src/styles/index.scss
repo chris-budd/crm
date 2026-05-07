@@ -67,3 +67,56 @@ input, textarea, select { font-family: $font-sans; }
 .anim-3        { animation-delay: 100ms; }
 .anim-4        { animation-delay: 150ms; }
 .anim-scale-in { animation: scaleIn $duration-slow $ease-spring both; }
+
+// ─── Responsive layout ────────────────────────────────────────────────────────
+// KPI statistic value size
+.kpi-statistic .ant-statistic-content-value { font-size: 36px; }
+
+@media (max-width: 767px) {
+  .kpi-statistic .ant-statistic-content-value { font-size: 24px !important; }
+}
+
+@media (max-width: 767px) {
+  // Sidebar becomes a bottom nav bar
+  .layout-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: 56px !important;
+    flex-direction: row !important;
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-right: none !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+
+    .layout-sidebar-logo,
+    .layout-sidebar-bottom { display: none !important; }
+
+    .layout-nav {
+      flex-direction: row !important;
+      flex: 1 !important;
+      padding: 0 !important;
+      justify-content: space-around;
+      align-items: center;
+      width: auto !important;
+    }
+  }
+
+  // Main content: no left margin, bottom padding for nav bar
+  .layout-main-col {
+    margin-left: 0 !important;
+    padding-bottom: 56px;
+  }
+
+  // Reduce main padding on mobile
+  .layout-main-content {
+    padding: 16px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .layout-main-content {
+    padding: 20px !important;
+  }
+}

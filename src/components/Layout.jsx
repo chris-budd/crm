@@ -127,7 +127,7 @@ export default function Layout({ children }) {
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
 
       {/* Narrow icon-only sidebar */}
-      <aside style={{
+      <aside className="layout-sidebar" style={{
         width: '56px',
         minWidth: '56px',
         background: '#2e3e50',
@@ -142,7 +142,7 @@ export default function Layout({ children }) {
         zIndex: 40,
       }}>
         {/* Logo */}
-        <div style={{
+        <div className="layout-sidebar-logo" style={{
           height: '56px',
           width: '100%',
           display: 'flex',
@@ -157,12 +157,12 @@ export default function Layout({ children }) {
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, width: '100%', padding: '10px 0', display: 'flex', flexDirection: 'column' }}>
+        <nav className="layout-nav" style={{ flex: 1, width: '100%', padding: '10px 0', display: 'flex', flexDirection: 'column' }}>
           {NAV_ITEMS.map(item => <NavItem key={item.to} item={item} />)}
         </nav>
 
         {/* Bottom: settings + avatar */}
-        <div style={{ width: '100%', padding: '10px 0', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+        <div className="layout-sidebar-bottom" style={{ width: '100%', padding: '10px 0', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
           <NavLink
             to="/settings"
             title="Settings"
@@ -193,7 +193,7 @@ export default function Layout({ children }) {
       </aside>
 
       {/* Main content */}
-      <div style={{ marginLeft: '56px', flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className="layout-main-col" style={{ marginLeft: '56px', flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 
         {/* Topbar */}
         <header style={{
@@ -353,7 +353,7 @@ export default function Layout({ children }) {
         </header>
 
         {/* Page content */}
-        <main style={{
+        <main className="layout-main-content" style={{
           flex: 1,
           padding: isPipeline ? '20px 24px 0' : '28px 28px',
           overflowY: isPipeline ? 'hidden' : 'auto',
