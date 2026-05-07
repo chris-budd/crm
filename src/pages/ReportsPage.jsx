@@ -5,6 +5,7 @@ import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { CardHeader } from '../components/CardHeader/CardHeader'
 import { MonoValue } from '../components/MonoValue/MonoValue'
+import { PageHeader } from '../components/PageHeader/PageHeader'
 
 const NOW = new Date('2026-05-06')
 const YEAR = NOW.getFullYear()
@@ -137,6 +138,7 @@ export default function ReportsPage() {
           .reports-grid-4 { grid-template-columns: 1fr; }
         }
       `}</style>
+      <PageHeader title="Reports" subtitle={`${DEALS.length} deals · ${YEAR}`} />
       {/* KPI Row */}
       <div className="reports-grid-4" style={{ marginBottom: '24px' }}>
         {kpis.map((kpi, i) => (
