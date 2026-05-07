@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Statistic, Table, Tag, Avatar, Progress } from 'antd'
+import { Card, Statistic, Table, Tag, Avatar, Progress, Tooltip } from 'antd'
 import { DEALS, OWNERS, PIPELINE_STAGES, MONTHLY_TARGETS } from '../data/crm'
 import { formatCurrency, stageMeta } from '../utils/crm'
 import { CardHeader } from '../components/CardHeader/CardHeader'
@@ -211,34 +211,73 @@ export default function ReportsPage() {
               </div>
             }
           />
-          <div style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '180px', position: 'relative' }}>
+          <div style={{ padding: '20px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: '220px', position: 'relative' }}>
               {monthly.map(m => {
-                const barH = (m.value / monthlyMax) * 160
-                const targetTop = 160 - (m.target / monthlyMax) * 160
+                const barH = (m.value / monthlyMax) * 200
+                const targetTop = 200 - (m.target / monthlyMax) * 200
                 const isCurrent = m.label === MONTH_LABELS[NOW.getMonth()]
+                const attainment = m.target > 0 ? Math.round((m.value / m.target) * 100) : null
+                const tooltipContent = (
+                  <div style={{ minWidth: '160px', padding: '2px 0' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>
+                      {m.label} {YEAR}{isCurrent ? ' · Current' : ''}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '3px' }}>
+                      <span style={{ opacity: 0.75 }}>Closed Won</span>
+                      <span style={{ fontWeight: 600 }}>{formatCurrency(m.value)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '3px' }}>
+                      <span style={{ opacity: 0.75 }}>Target</span>
+                      <span style={{ fontWeight: 600 }}>{formatCurrency(m.target)}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '3px' }}>
+                      <span style={{ opacity: 0.75 }}>Deals Won</span>
+                      <span style={{ fontWeight: 600 }}>{m.count}</span>
+                    </div>
+                    {attainment !== null && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', paddingTop: '4px', marginTop: '4px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+                        <span style={{ opacity: 0.75 }}>Attainment</span>
+                        <span style={{ fontWeight: 700, color: attainment >= 100 ? '#10B981' : attainment >= 60 ? '#F59E0B' : '#EF4444' }}>
+                          {attainment}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )
                 return (
-                  <div key={m.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                  <div key={m.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', height: '100%' }}>
                     <div style={{ flex: 1, width: '100%', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
                       {m.target > 0 && (
                         <div style={{
                           position: 'absolute', top: targetTop, left: 0, right: 0,
-                          borderTop: '1.5px dashed var(--text-muted)', opacity: 0.55,
+                          borderTop: '1.5px dashed var(--text-muted)', opacity: 0.55, pointerEvents: 'none',
                         }} />
                       )}
-                      <div
-                        title={`${m.label}: ${formatCurrency(m.value)} · target ${formatCurrency(m.target)}`}
-                        style={{
-                          width: '70%',
-                          height: `${barH}px`,
-                          background: isCurrent
-                            ? 'linear-gradient(180deg, var(--brand), var(--brand-hover))'
-                            : 'var(--brand)',
-                          opacity: m.value === 0 ? 0.15 : 1,
-                          borderRadius: '4px 4px 0 0',
-                          transition: 'height 0.4s ease',
-                        }}
-                      />
+                      <Tooltip title={tooltipContent} placement="top" mouseEnterDelay={0.05}>
+                        <div
+                          style={{
+                            width: '70%',
+                            height: `${Math.max(barH, m.value === 0 ? 4 : barH)}px`,
+                            background: isCurrent
+                              ? 'linear-gradient(180deg, var(--brand), var(--brand-hover))'
+                              : 'var(--brand)',
+                            opacity: m.value === 0 ? 0.15 : 1,
+                            borderRadius: '4px 4px 0 0',
+                            transition: 'height 0.4s ease, transform 0.15s ease, filter 0.15s ease',
+                            cursor: 'pointer',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scaleY(1.03)'
+                            e.currentTarget.style.transformOrigin = 'bottom'
+                            e.currentTarget.style.filter = 'brightness(1.1)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scaleY(1)'
+                            e.currentTarget.style.filter = 'brightness(1)'
+                          }}
+                        />
+                      </Tooltip>
                     </div>
                     <span style={{
                       fontSize: '10px',
