@@ -126,8 +126,19 @@ export default function ReportsPage() {
 
   return (
     <div style={{ maxWidth: '100%' }}>
+      <style>{`
+        .reports-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .reports-grid-2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+        @media (max-width: 1100px) {
+          .reports-grid-4 { grid-template-columns: repeat(2, 1fr); }
+          .reports-grid-2 { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+          .reports-grid-4 { grid-template-columns: 1fr; }
+        }
+      `}</style>
       {/* KPI Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+      <div className="reports-grid-4" style={{ marginBottom: '24px' }}>
         {kpis.map((kpi, i) => (
           <Card key={kpi.label} className={`anim-fade-up anim-${i + 1}`} styles={{ body: { padding: '20px' } }}>
             <Statistic
@@ -142,7 +153,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Row 2: Pipeline by Stage + Win/Loss */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
+      <div className="reports-grid-2" style={{ marginBottom: '24px' }}>
         <Card styles={{ body: { padding: 0 } }}>
           <CardHeader title="Pipeline by Stage" />
           <div style={{ padding: '16px 20px 20px' }}>
@@ -197,7 +208,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Row 3: Monthly Revenue + Rep Performance */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px', marginBottom: '24px' }}>
+      <div className="reports-grid-2" style={{ marginBottom: '24px' }}>
         <Card styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column' } }}>
           <CardHeader
             title={`Monthly Revenue · ${YEAR}`}
